@@ -27,4 +27,32 @@ public struct TextMateTheme: Codable {
 
 		self = try decoder.decode(Self.self, from: data)
 	}
+
+	public init(contentsOf url: URL) throws {
+		let data = try Data(contentsOf: url, options: [])
+		try self.init(with: data)
+	}
 }
+
+#if canImport(AppKit)
+import AppKit
+
+extension TextMateTheme {
+	public static var all: [TextMateTheme] {
+		let manager = FileManager.default
+
+		let url = try? manager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+
+		guard let themesURL = url?.appendingPathComponent("/TextMate/Managed/Bundles/Themes.tmbundle/Themes", isDirectory: true) else {
+			return []
+		}
+
+		guard let themePaths = try? manager.contentsOfDirectory(at: themesURL, includingPropertiesForKeys: nil) else {
+			return []
+		}
+
+		return themePaths
+			.compactMap { try? TextMateTheme(contentsOf: $0) }
+	}
+}
+#endif

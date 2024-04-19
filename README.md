@@ -30,7 +30,11 @@ dependencies: [
 ```swift
 import ThemePark
 
+let url = URL(...)
+let data = try Data(contentsOf: url, options: [])
+let theme = try TextMateTheme(with: data)
 
+let allInstalledThemes = TextMateTheme.all
 ```
 
 ## Contributing and Collaboration
