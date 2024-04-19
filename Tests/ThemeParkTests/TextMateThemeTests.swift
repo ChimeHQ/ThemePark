@@ -21,8 +21,13 @@ final class TextMateThemeTests: XCTestCase {
 		let url = try XCTUnwrap(Bundle.module.url(forResource: "Blackboard", withExtension: "tmTheme", subdirectory: "Resources"))
 		let theme = try TextMateTheme(contentsOf: url)
 
-		let color = try XCTUnwrap(Color(hex: "#0C1021"))
-		
-		XCTAssertEqual(theme.style(for: .editorBackground), Style(font: nil, color: color))
+		XCTAssertEqual(
+			theme.style(for: .editorBackground),
+			Style(font: nil, color: Color(hex: "#0C1021")!)
+		)
+		XCTAssertEqual(
+			theme.style(for: .syntaxDefault),
+			Style(font: nil, color: Color(hex: "#F8F8F8")!)
+		)
 	}
 }

@@ -19,8 +19,13 @@ final class XcodeThemeTests: XCTestCase {
 		let url = try XCTUnwrap(Bundle.module.url(forResource: "Default (Light)", withExtension: "xccolortheme", subdirectory: "Resources"))
 		let theme = try XcodeTheme(contentsOf: url)
 
-		let color = try XCTUnwrap(Color(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0))
-
-		XCTAssertEqual(theme.style(for: .editorBackground), Style(font: nil, color: color))
+		XCTAssertEqual(
+			theme.style(for: .editorBackground),
+			Style(font: nil, color: Color(hex: "#ffffff")!)
+		)
+		XCTAssertEqual(
+			theme.style(for: .syntaxDefault),
+			Style(font: nil, color: Color(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.85))
+		)
 	}
 }

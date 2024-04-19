@@ -91,21 +91,36 @@ extension XcodeTheme {
 }
 #endif
 
+extension Color {
+	convenience init?(componentsString: String) {
+		let components = componentsString
+			.split(separator: " ")
+			.compactMap({ Float($0) })
+			.map({ CGFloat($0) })
+
+		guard components.count == 4 else {
+			return nil
+		}
+
+		self.init(
+		   red: components[0],
+		   green: components[1],
+		   blue: components[2],
+		   alpha: components[3]
+	   )
+	}
+}
+
 extension XcodeTheme: Styling {
 	public func style(for query: Query) -> Style {
 		switch query {
 		case .editorBackground:
-			let colorComponents = sourceTextBackground
-				.split(separator: " ")
-				.compactMap({ Float($0) })
-				.map({ CGFloat($0) })
+			let color = Color(componentsString: sourceTextBackground) ?? .black
 
-			let color = Color(
-				red: colorComponents[0],
-				green: colorComponents[1],
-				blue: colorComponents[2],
-				alpha: colorComponents[3]
-			)
+			return Style(font: nil, color: color)
+		case .syntaxDefault:
+			let string = syntaxColors["xcode.syntax.plain"] ?? ""
+			let color = Color(componentsString: string) ?? .black
 
 			return Style(font: nil, color: color)
 		default:

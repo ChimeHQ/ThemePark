@@ -54,8 +54,12 @@ extension TextMateTheme: Styling {
 	public func style(for query: Query) -> Style {
 		switch query {
 		case .editorBackground:
-			let settings = settings.first
-			let colorHex = settings?.settings["background"]
+			let colorHex = settings.first?.settings["background"]
+			let color = Color(hex: colorHex!)!
+
+			return Style(font: nil, color: color)
+		case .syntaxDefault:
+			let colorHex = settings.first?.settings["foreground"]
 			let color = Color(hex: colorHex!)!
 
 			return Style(font: nil, color: color)
