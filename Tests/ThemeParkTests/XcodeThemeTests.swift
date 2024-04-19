@@ -14,4 +14,13 @@ final class XcodeThemeTests: XCTestCase {
 		print(XcodeTheme.builtIn.keys)
 		print(XcodeTheme.userInstalled.keys)
 	}
+
+	func testSemanticQueries() throws {
+		let url = try XCTUnwrap(Bundle.module.url(forResource: "Default (Light)", withExtension: "xccolortheme", subdirectory: "Resources"))
+		let theme = try XcodeTheme(contentsOf: url)
+
+		let color = try XCTUnwrap(Color(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0))
+
+		XCTAssertEqual(theme.style(for: .editorBackground), Style(font: nil, color: color))
+	}
 }

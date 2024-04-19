@@ -100,3 +100,25 @@ extension XcodeTheme {
 }
 #endif
 
+extension XcodeTheme: Styling {
+	public func style(for query: Query) -> Style {
+		switch query {
+		case .editorBackground:
+			let colorComponents = sourceTextBackground
+				.split(separator: " ")
+				.compactMap({ Float($0) })
+				.map({ CGFloat($0) })
+
+			let color = Color(
+				red: colorComponents[0],
+				green: colorComponents[1],
+				blue: colorComponents[2],
+				alpha: colorComponents[3]
+			)
+
+			return Style(font: nil, color: color)
+		default:
+			return Style(font: nil, color: Color.black)
+		}
+	}
+}
