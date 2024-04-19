@@ -2,15 +2,6 @@ import Foundation
 
 import ColorToolbox
 
-#if canImport(UniformTypeIdentifiers)
-import UniformTypeIdentifiers
-
-@available(macOS 11.0, iOS 14.0, watchOS 7.0, tvOS 14.0, *)
-extension UTType {
-	public static let textMateTheme = UTType(importedAs: "com.macromates.textmate.theme", conformingTo: .propertyList)
-}
-#endif
-
 public struct TextMateTheme: Codable {
 	public struct Setting: Codable {
 		public let name: String?
