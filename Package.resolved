@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "colortoolbox",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/raymondjavaxx/ColorToolbox",
+      "state" : {
+        "revision" : "77a4bcfd5073ca4f29d37bbce7fac20dd085eea2",
+        "version" : "1.0.1"
+      }
+    }
+  ],
+  "version" : 2
+}

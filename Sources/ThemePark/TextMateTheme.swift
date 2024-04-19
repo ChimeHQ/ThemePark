@@ -1,5 +1,7 @@
 import Foundation
 
+import ColorToolbox
+
 #if canImport(UniformTypeIdentifiers)
 import UniformTypeIdentifiers
 
@@ -56,3 +58,18 @@ extension TextMateTheme {
 	}
 }
 #endif
+
+extension TextMateTheme: Styling {
+	public func style(for query: Query) -> Style {
+		switch query {
+		case .editorBackground:
+			let settings = settings.first
+			let colorHex = settings?.settings["background"]
+			let color = Color(hex: colorHex!)!
+
+			return Style(font: nil, color: color)
+		default:
+			return Style(font: nil, color: PlatformColor.black)
+		}
+	}
+}

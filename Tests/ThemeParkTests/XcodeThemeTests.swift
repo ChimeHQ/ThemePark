@@ -15,4 +15,3 @@ final class XcodeThemeTests: XCTestCase {
 		print(XcodeTheme.userInstalled.keys)
 	}
 }
-

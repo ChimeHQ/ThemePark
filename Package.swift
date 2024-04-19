@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
 	name: "ThemePark",
 	platforms: [
-		.macOS(.v10_15),
+		.macOS(.v11),
 		.iOS(.v13),
 		.tvOS(.v13),
 		.watchOS(.v6),
@@ -15,8 +15,11 @@ let package = Package(
 	products: [
 		.library(name: "ThemePark", targets: ["ThemePark"]),
 	],
+	dependencies: [
+		.package(url: "https://github.com/raymondjavaxx/ColorToolbox", from: "1.0.1"),
+	],
 	targets: [
-		.target(name: "ThemePark"),
+		.target(name: "ThemePark", dependencies: ["ColorToolbox"]),
 		.testTarget(
 			name: "ThemeParkTests",
 			dependencies: ["ThemePark"],
