@@ -13,6 +13,7 @@ Pretty much every editor has its own theming system. I'd love a package that cou
 Supports:
 
 - TextMate `.tmTheme` with `UTType.textMateTheme`
+- Xcode `.xccolortheme` with `UTType.xcodeColorTheme`
 
 > [!WARNING]
 > This is currently very WIP.
@@ -27,6 +28,8 @@ dependencies: [
 
 ## Usage
 
+TextMate themes:
+
 ```swift
 import ThemePark
 
@@ -35,6 +38,19 @@ let data = try Data(contentsOf: url, options: [])
 let theme = try TextMateTheme(with: data)
 
 let allInstalledThemes = TextMateTheme.all
+```
+
+Xcode Themes:
+
+```swift
+import ThemePark
+
+let url = URL(...)
+let data = try Data(contentsOf: url, options: [])
+let theme = try XcodeTheme(with: data)
+
+// [String: XcodeTheme], as XcodeTheme names are stored only on the file system
+let allInstalledThemes = XcodeTheme.all
 ```
 
 ## Contributing and Collaboration
