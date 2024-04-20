@@ -25,7 +25,7 @@ public struct XcodeTheme: Codable, Hashable, Sendable {
 	}
 }
 
-#if canImport(AppKit)
+#if canImport(AppKit) && !targetEnvironment(macCatalyst)
 import AppKit
 
 extension XcodeTheme {
