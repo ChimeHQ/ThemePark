@@ -28,6 +28,8 @@ dependencies: [
 
 ## Usage
 
+### Working with themes
+
 TextMate themes:
 
 ```swift
@@ -56,6 +58,8 @@ let allInstalledThemes = XcodeTheme.all
 let allVariants = XcodeVariantTheme.all
 ```
 
+### Resolving styles
+
 ThemePark's `Styling` protocol can make use of the SwiftUI environment to adjust for color scheme, contrast, and hover state. You can expose this to your view heirarchy with a modifier:
 
 ```
@@ -69,6 +73,16 @@ struct ThemedView: View {
     }
 }
 ``` 
+
+### Syntax element indentification
+
+Most theming systems use strings to provide semantic labels for syntax elements. Eventually, this string->semantic meaning needs to be resolved. Instead of leaving this up to the client/theme designer, ThemePark uses a enum-based system for syntax element indentification. This removes all ambiguity, but can potentially expose mismatches.
+
+This is a very common problem with tree-sitter highlight queries, which have no specification and are often completely ad-hoc.
+
+```swift
+let specifier = SyntaxSpecifier(highlightsQueryCapture: catpureName)
+```
 
 ## Contributing and Collaboration
 

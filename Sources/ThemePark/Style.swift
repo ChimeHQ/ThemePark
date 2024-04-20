@@ -45,18 +45,6 @@ public struct Style : Hashable {
 	}
 }
 
-public struct Specifier: Hashable, Sendable {
-	public var components: [String]
-
-	public init(components: [String]) {
-		self.components = components
-	}
-
-	public init(_ string: String) {
-		self.components = string.split(separator: ".").map { String($0) }
-	}
-}
-
 public struct Variant: Hashable, Sendable {
 	public var colorScheme: ColorScheme
 	public var colorSchemeContrast: ColorSchemeContrast
@@ -72,7 +60,7 @@ public struct Query: Hashable, Sendable {
 		case editorBackground
 
 		case syntaxDefault
-		case syntax(Specifier)
+		case syntax(SyntaxSpecifier)
 	}
 
 	public struct Context: Hashable, Sendable {
