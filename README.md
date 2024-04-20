@@ -2,6 +2,7 @@
 
 [![Build Status][build status badge]][build status]
 [![Platforms][platforms badge]][platforms]
+[![Documentation][documentation badge]][documentation]
 
 </div>
 
@@ -14,9 +15,6 @@ Supports:
 
 - TextMate `.tmTheme` with `UTType.textMateTheme`
 - Xcode `.xccolortheme` with `UTType.xcodeColorTheme`
-
-> [!WARNING]
-> This is currently very WIP.
 
 ## Installation
 
@@ -99,3 +97,5 @@ By participating in this project you agree to abide by the [Contributor Code of 
 [build status badge]: https://github.com/ChimeHQ/ThemePark/workflows/CI/badge.svg
 [platforms]: https://swiftpackageindex.com/ChimeHQ/ThemePark
 [platforms badge]: https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FChimeHQ%2FThemePark%2Fbadge%3Ftype%3Dplatforms
+[documentation]: https://swiftpackageindex.com/ChimeHQ/ThemePark/main/documentation
+[documentation badge]: https://img.shields.io/badge/Documentation-DocC-blue
