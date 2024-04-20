@@ -9,12 +9,14 @@
 # ThemePark
 A Swift library for working with syntax highlighting/IDE themes
 
-You want to know "what should the editor foreground text color be". That information is inside an editor-specific theme. ThemePark gives you a way to resolve that semantic query to the styling information you need.
+This package aims to solve two problems: reading theme definitions and making those definitions semantically-addressable.
 
 Supports:
 
 - TextMate `.tmTheme` with `UTType.textMateTheme`
 - Xcode `.xccolortheme` with `UTType.xcodeColorTheme`
+- Loading themes from known installation sources
+- Uniform, structed semantic naming of style defintions
 
 ## Installation
 
@@ -71,6 +73,17 @@ struct ThemedView: View {
     }
 }
 ``` 
+
+Executing queries on a theme:
+
+```
+let styler: any Styling = TextMateTheme.all.randomElement()!
+let query = Query(key: .editorBackground, context: .init(colorScheme: .dark))
+
+let style = styler.style(for: query)
+print(style.color)
+print(style.font)
+```
 
 ### Syntax element indentification
 
