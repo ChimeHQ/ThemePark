@@ -2,8 +2,8 @@ import Foundation
 
 import ColorToolbox
 
-public struct TextMateTheme: Codable {
-	public struct Setting: Codable {
+public struct TextMateTheme: Codable, Hashable, Sendable {
+	public struct Setting: Codable, Hashable, Sendable {
 		public let name: String?
 		public let scope: String?
 		public let settings: [String: String]
@@ -36,7 +36,7 @@ extension TextMateTheme {
 
 		let url = try? manager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
 
-		guard let themesURL = url?.appendingPathComponent("/TextMate/Managed/Bundles/Themes.tmbundle/Themes", isDirectory: true) else {
+		guard let themesURL = url?.appendingPathComponent("TextMate/Managed/Bundles/Themes.tmbundle/Themes", isDirectory: true) else {
 			return []
 		}
 
@@ -51,16 +51,16 @@ extension TextMateTheme {
 #endif
 
 extension TextMateTheme: Styling {
-	public func style(for query: Query) -> Style {
-		switch query {
+	public func style(for query: Query) -> Style? {
+		switch query.key {
 		case .editorBackground:
 			let colorHex = settings.first?.settings["background"]
-			let color = Color(hex: colorHex!)!
+			let color = PlatformColor(hex: colorHex!)!
 
 			return Style(font: nil, color: color)
 		case .syntaxDefault:
 			let colorHex = settings.first?.settings["foreground"]
-			let color = Color(hex: colorHex!)!
+			let color = PlatformColor(hex: colorHex!)!
 
 			return Style(font: nil, color: color)
 		default:

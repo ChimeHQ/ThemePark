@@ -51,6 +51,9 @@ let theme = try XcodeTheme(with: data)
 
 // [String: XcodeTheme], as XcodeTheme names are stored only on the file system
 let allInstalledThemes = XcodeTheme.all
+
+// consolidates Xcode themes by color scheme variant
+let allVariants = XcodeVariantTheme.all
 ```
 
 ## Contributing and Collaboration

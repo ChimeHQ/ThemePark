@@ -1,6 +1,6 @@
 import Foundation
 
-public struct XcodeTheme: Codable {
+public struct XcodeTheme: Codable, Hashable, Sendable {
 	public let version: Int
 	public let sourceTextBackground: String
 	public let markupTextNormalColor: String
@@ -91,7 +91,7 @@ extension XcodeTheme {
 }
 #endif
 
-extension Color {
+extension PlatformColor {
 	convenience init?(componentsString: String) {
 		let components = componentsString
 			.split(separator: " ")
@@ -112,19 +112,78 @@ extension Color {
 }
 
 extension XcodeTheme: Styling {
-	public func style(for query: Query) -> Style {
-		switch query {
+	public func syntaxColor(for name: String) -> PlatformColor? {
+		syntaxColors[name]
+			.flatMap { PlatformColor(componentsString: $0) }
+	}
+
+	private func syntaxStyle(for name: String) -> Style? {
+		let color = syntaxColor(for: "xcode.syntax.plain")
+
+		return Style(font: nil, color: color)
+	}
+
+	public func style(for query: Query) -> Style? {
+		switch query.key {
 		case .editorBackground:
-			let color = Color(componentsString: sourceTextBackground) ?? .black
+			let color = PlatformColor(componentsString: sourceTextBackground)
 
 			return Style(font: nil, color: color)
 		case .syntaxDefault:
-			let string = syntaxColors["xcode.syntax.plain"] ?? ""
-			let color = Color(componentsString: string) ?? .black
-
-			return Style(font: nil, color: color)
+			return syntaxStyle(for: "xcode.syntax.plain")
 		default:
-			return Style(font: nil, color: Color.black)
+			return Style(font: nil, color: nil)
+		}
+	}
+}
+
+public struct XcodeVariantTheme {
+	public let name: String
+	public let base: XcodeTheme
+	public let dark: XcodeTheme?
+
+	public init(name: String, base: XcodeTheme, dark: XcodeTheme?) {
+		self.name = name
+		self.base = base
+		self.dark = dark
+	}
+
+	public static var all: [XcodeVariantTheme] {
+		let allThemes = XcodeTheme.all
+
+		let lightVariants = allThemes.keys.filter({ $0.hasSuffix(" (Light)") })
+		let baseNames = lightVariants.map({ String($0.dropLast(8)) })
+
+		var variants = [XcodeVariantTheme]()
+
+		for name in baseNames {
+			let light = allThemes[name + " (Light)"]!
+			let dark = allThemes[name + " (Dark)"]
+
+			variants.append(XcodeVariantTheme(name: name, base: light, dark: dark))
+		}
+
+		for (name, theme) in allThemes {
+			if name.hasSuffix("(Light)") || name.hasSuffix("(Dark)") {
+				continue
+			}
+
+			variants.append(XcodeVariantTheme(name: name, base: theme, dark: nil))
+		}
+
+		return variants
+	}
+}
+
+extension XcodeVariantTheme: Styling {
+	public func style(for query: Query) -> Style? {
+		switch query.context.variant.colorScheme {
+		case .dark:
+			dark?.style(for: query) ?? base.style(for: query)
+		case .light:
+			base.style(for: query)
+		@unknown default:
+			base.style(for: query)
 		}
 	}
 }

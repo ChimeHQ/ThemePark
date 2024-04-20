@@ -21,11 +21,11 @@ final class XcodeThemeTests: XCTestCase {
 
 		XCTAssertEqual(
 			theme.style(for: .editorBackground),
-			Style(font: nil, color: Color(hex: "#ffffff")!)
+			Style(font: nil, color: PlatformColor(hex: "#ffffff")!)
 		)
 		XCTAssertEqual(
 			theme.style(for: .syntaxDefault),
-			Style(font: nil, color: Color(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.85))
+			Style(font: nil, color: PlatformColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.85))
 		)
 	}
 }

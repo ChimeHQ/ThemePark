@@ -23,11 +23,11 @@ final class TextMateThemeTests: XCTestCase {
 
 		XCTAssertEqual(
 			theme.style(for: .editorBackground),
-			Style(font: nil, color: Color(hex: "#0C1021")!)
+			Style(font: nil, color: PlatformColor(hex: "#0C1021")!)
 		)
 		XCTAssertEqual(
 			theme.style(for: .syntaxDefault),
-			Style(font: nil, color: Color(hex: "#F8F8F8")!)
+			Style(font: nil, color: PlatformColor(hex: "#F8F8F8")!)
 		)
 	}
 }
