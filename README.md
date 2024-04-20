@@ -56,6 +56,20 @@ let allInstalledThemes = XcodeTheme.all
 let allVariants = XcodeVariantTheme.all
 ```
 
+ThemePark's `Styling` protocol can make use of the SwiftUI environment to adjust for color scheme, contrast, and hover state. You can expose this to your view heirarchy with a modifier:
+
+```
+import SwiftUI
+import ThemePark
+
+struct ThemedView: View {
+    var body: some View {
+        Text("themed")
+            .themeSensitive()
+    }
+}
+``` 
+
 ## Contributing and Collaboration
 
 I would love to hear from you! Issues, Discussions, or pull requests work great.
