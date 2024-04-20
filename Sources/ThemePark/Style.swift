@@ -67,7 +67,7 @@ public struct Variant: Hashable, Sendable {
 	}
 }
 
-public struct Query {
+public struct Query: Hashable, Sendable {
 	public enum Key : Hashable, Sendable {
 		case editorBackground
 
