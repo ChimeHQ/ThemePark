@@ -9,7 +9,7 @@
 # ThemePark
 A Swift library for working with syntax highlighting/IDE themes
 
-Pretty much every editor has its own theming system. I'd love a package that could be used to intrepret a bunch of different themes for interoperability. I'm not sure how feasible this would be for all the things a theme can control, but I thought at a minimum it could be handy for syntax highlighting.
+You want to know "what should the editor foreground text color be". That information is inside an editor-specific theme. ThemePark gives you a way to resolve that semantic query to the styling information you need.
 
 Supports:
 
