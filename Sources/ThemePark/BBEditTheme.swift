@@ -61,8 +61,43 @@ extension BBEditTheme {
 }
 #endif
 
+extension Scanner {
+    func scanCGFloat() -> CGFloat? {
+        scanFloat(representation: .decimal).map(CGFloat.init)
+    }
+
+    func scanCGFloatQuad() -> (CGFloat, CGFloat, CGFloat, CGFloat)? {
+        guard let a = scanCGFloat() else { return nil }
+        guard scanString(",") != nil else { return nil }
+        guard let b = scanCGFloat() else { return nil }
+        guard scanString(",") != nil else { return nil }
+        guard let c = scanCGFloat() else { return nil }
+        guard scanString(",") != nil else { return nil }
+        guard let d = scanCGFloat() else { return nil }
+
+        return (a, b, c, d)
+    }
+}
+
 extension BBEditTheme: Styling {
 	private func platformColor(for value: String?) -> PlatformColor? {
+        guard let value else { return nil }
+
+        let scanner = Scanner(string: value)
+        scanner.charactersToBeSkipped = .whitespaces
+
+        if scanner.scanString("rgba(") != nil {
+            guard let quad = scanner.scanCGFloatQuad() else { return nil }
+
+            return PlatformColor(red: quad.0, green: quad.1, blue: quad.2, alpha: quad.3)
+        }
+
+        if scanner.scanString("hsla(") != nil {
+            guard let quad = scanner.scanCGFloatQuad() else { return nil }
+
+            return PlatformColor(hue: quad.0, saturation: quad.1, brightness: quad.2, alpha: quad.3)
+        }
+
 		return nil
 	}
 

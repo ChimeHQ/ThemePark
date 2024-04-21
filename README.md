@@ -15,7 +15,7 @@ Supports:
 
 - TextMate `.tmTheme` with `UTType.textMateTheme`
 - Xcode `.xccolortheme` with `UTType.xcodeColorTheme`
-- BBEdit `.bbColorScheme` with `UTType.bbeditColorScheme` (WIP)
+- BBEdit `.bbColorScheme` with `UTType.bbeditColorScheme`
 - Loading themes from known installation sources
 - Uniform, structed semantic naming of style defintions
 
@@ -57,6 +57,18 @@ let allInstalledThemes = XcodeTheme.all
 
 // consolidates Xcode themes by color scheme variant
 let allVariants = XcodeVariantTheme.all
+```
+
+BBEdit themes:
+
+```swift
+import ThemePark
+
+let url = URL(...)
+let data = try Data(contentsOf: url, options: [])
+let theme = try BBEditTheme(with: data)
+
+let allInstalledThemes = BBEditTheme.all
 ```
 
 ### Resolving styles
