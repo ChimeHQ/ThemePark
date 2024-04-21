@@ -41,23 +41,67 @@ public struct BBEditTheme: Decodable, Hashable, Sendable {
 #if canImport(AppKit)
 import AppKit
 
+extension FileManager {
+    func applicationSupport(subDirectory component: String) throws -> URL? {
+        let root = try? url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+
+        return root?.appendingPathComponent(component, isDirectory: true)
+    }
+
+    func namedURLs(at url: URL, extension ext: String) throws -> [(String, URL)] {
+        try contentsOfDirectory(at: url, includingPropertiesForKeys: nil)
+            .compactMap { url in
+                guard url.pathExtension == ext else { return nil }
+
+                let name = url.deletingPathExtension().lastPathComponent
+
+                return (name, url)
+            }
+    }
+}
+
 extension BBEditTheme {
-	public static var all: [BBEditTheme] {
-		let manager = FileManager.default
+    public static var userInstalled: [String: BBEditTheme] {
+        guard let appSupportURL = try? FileManager.default.applicationSupport(subDirectory: "BBEdit/Color Schemes") else {
+            return [:]
+        }
 
-		let url = try? manager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+        var dict = [String: BBEditTheme]()
 
-		guard let themesURL = url?.appendingPathComponent("BBEdit/Color Schemes/", isDirectory: true) else {
-			return []
-		}
+        let pairs = try? FileManager.default.namedURLs(at: appSupportURL, extension: "bbColorScheme")
 
-		guard let themePaths = try? manager.contentsOfDirectory(at: themesURL, includingPropertiesForKeys: nil) else {
-			return []
-		}
+        for pair in pairs ?? [] {
+            guard let theme = try? BBEditTheme(contentsOf: pair.1) else { continue }
 
-		return themePaths
-			.compactMap { try? BBEditTheme(contentsOf: $0) }
-	}
+            dict[pair.0] = theme
+        }
+
+        return dict
+    }
+
+    public static var builtIn: [String: BBEditTheme] {
+        guard let appUrl = NSWorkspace.shared.urlForApplication(withBundleIdentifier: "com.barebones.bbedit") else {
+            return [:]
+        }
+
+        let themesURL = appUrl.appendingPathComponent("Contents/Resources/Color Schemes", isDirectory: true)
+
+        var dict = [String: BBEditTheme]()
+
+        let pairs = try? FileManager.default.namedURLs(at: themesURL, extension: "bbColorScheme")
+
+        for pair in pairs ?? [] {
+            guard let theme = try? BBEditTheme(contentsOf: pair.1) else { continue }
+
+            dict[pair.0] = theme
+        }
+
+        return dict
+    }
+
+    public static var all: [String: BBEditTheme] {
+        builtIn.merging(userInstalled, uniquingKeysWith: { $1 })
+    }
 }
 #endif
 
