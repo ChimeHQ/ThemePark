@@ -22,4 +22,8 @@ extension StylingCache: Styling {
 
 		return style
 	}
+
+	public var supportedVariants: Set<Variant> {
+		styler.supportedVariants
+	}
 }

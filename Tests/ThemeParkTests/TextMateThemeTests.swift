@@ -13,6 +13,7 @@ final class TextMateThemeTests: XCTestCase {
 
 		XCTAssertNil(setting.name)
 		XCTAssertNil(setting.scope)
+		XCTAssertEqual(theme.supportedVariants, [.init(colorScheme: .dark)])
 
 		XCTAssertEqual(setting.settings["background"], "#0C1021")
 	}

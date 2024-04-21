@@ -85,6 +85,14 @@ print(style.color)
 print(style.font)
 ```
 
+### Color schemes
+
+The `Variant` type captures information about color scheme and contrast. But, do you want the theme to fully customize the UI, or would you like the user's preferences to customize the theme? This is up the the client and the capabilities of the underlying `Styling` conformance. Many themes also do not support more than one variant, so it can be necessary to query that as well:
+
+```swift
+let variants = theme.supportedVariants
+```
+
 ### Syntax element indentification
 
 Most theming systems use strings to provide semantic labels for syntax elements. Eventually, this string->semantic meaning needs to be resolved. Instead of leaving this up to the client/theme designer, ThemePark uses a enum-based system for syntax element indentification. This removes all ambiguity, but can potentially expose mismatches.

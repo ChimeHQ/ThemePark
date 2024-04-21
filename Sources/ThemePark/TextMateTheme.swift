@@ -67,4 +67,15 @@ extension TextMateTheme: Styling {
 			return Style(font: nil, color: PlatformColor.black)
 		}
 	}
+
+	public var supportedVariants: Set<Variant> {
+		guard let colorHex = settings.first?.settings["background"] else {
+			return [.init(colorScheme: .light)]
+		}
+		
+		let color = PlatformColor(hex: colorHex) ?? .white
+		let isDark = color.relativeLuminance < 0.5
+
+		return isDark ? [.init(colorScheme: .dark)] : [.init(colorScheme: .light)]
+	}
 }

@@ -84,6 +84,7 @@ public struct Query: Hashable, Sendable {
 
 public protocol Styling {
 	func style(for query: Query) -> Style?
+	var supportedVariants: Set<Variant> { get }
 }
 
 extension Styling {

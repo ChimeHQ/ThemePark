@@ -135,6 +135,13 @@ extension XcodeTheme: Styling {
 			return Style(font: nil, color: nil)
 		}
 	}
+
+	public var supportedVariants: Set<Variant> {
+		let color = PlatformColor(componentsString: sourceTextBackground) ?? .white
+		let isDark = color.relativeLuminance < 0.5
+
+		return isDark ? [.init(colorScheme: .dark)] : [.init(colorScheme: .light)]
+	}
 }
 
 public struct XcodeVariantTheme {
@@ -185,5 +192,13 @@ extension XcodeVariantTheme: Styling {
 		@unknown default:
 			base.style(for: query)
 		}
+	}
+
+	public var supportedVariants: Set<Variant> {
+		if dark != nil {
+			return [.init(colorScheme: .dark), .init(colorScheme: .light)]
+		}
+
+		return base.supportedVariants
 	}
 }
