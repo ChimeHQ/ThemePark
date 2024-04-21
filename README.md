@@ -15,6 +15,7 @@ Supports:
 
 - TextMate `.tmTheme` with `UTType.textMateTheme`
 - Xcode `.xccolortheme` with `UTType.xcodeColorTheme`
+- BBEdit `.bbColorScheme` with `UTType.bbeditColorScheme` (WIP)
 - Loading themes from known installation sources
 - Uniform, structed semantic naming of style defintions
 
