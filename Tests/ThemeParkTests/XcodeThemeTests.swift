@@ -21,12 +21,16 @@ final class XcodeThemeTests: XCTestCase {
 		let theme = try XcodeTheme(contentsOf: url)
 
 		XCTAssertEqual(
-			theme.style(for: .editorBackground),
-			Style(font: nil, color: PlatformColor(hex: "#ffffff")!)
+			theme.style(for: Query(key: .editor(.background), context: .init(colorScheme: .light))),
+			Style(color: PlatformColor(hex: "#ffffff")!)
 		)
 		XCTAssertEqual(
-			theme.style(for: .syntaxDefault),
-			Style(font: nil, color: PlatformColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.85))
+			theme.style(for: Query(key: .syntax(.text), context: .init(colorScheme: .light))),
+			Style(color: PlatformColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.85))
+		)
+		XCTAssertEqual(
+			theme.style(for: Query(key: .syntax(.comment(nil)), context: .init(colorScheme: .light))),
+			Style(color: PlatformColor(red: 0.36526, green: 0.421879, blue: 0.475154, alpha: 1.0))
 		)
 	}
 }

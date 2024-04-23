@@ -51,20 +51,37 @@ extension TextMateTheme {
 #endif
 
 extension TextMateTheme: Styling {
-	public func style(for query: Query) -> Style? {
+	private var fallbackForegroundColor: PlatformColor {
+#if os(macOS)
+		let colorHex = settings.first?.settings["foreground"]
+
+		return colorHex.flatMap { PlatformColor(hex: $0) } ?? .labelColor
+#endif
+	}
+
+	private func resolveScope(_ scope: String) -> Style {
+		let colorHex = settings.first(where: { $0.scope == scope })?.settings["foreground"]
+
+		let color = colorHex.flatMap { PlatformColor(hex: $0) } ?? fallbackForegroundColor
+
+		return Style(color: color, font: nil)
+	}
+
+	public func style(for query: Query) -> Style {
 		switch query.key {
-		case .editorBackground:
+		case .editor(.background):
 			let colorHex = settings.first?.settings["background"]
 			let color = PlatformColor(hex: colorHex!)!
 
-			return Style(font: nil, color: color)
-		case .syntaxDefault:
-			let colorHex = settings.first?.settings["foreground"]
-			let color = PlatformColor(hex: colorHex!)!
+			return Style(color: color, font: nil)
+		case .syntax(.text):
+			let color = fallbackForegroundColor
 
-			return Style(font: nil, color: color)
+			return Style(color: color, font: nil)
+		case .syntax(.comment(_)):
+			return resolveScope("comment")
 		default:
-			return Style(font: nil, color: PlatformColor.black)
+			return Style(color: .red, font: nil)
 		}
 	}
 
@@ -72,7 +89,7 @@ extension TextMateTheme: Styling {
 		guard let colorHex = settings.first?.settings["background"] else {
 			return [.init(colorScheme: .light)]
 		}
-		
+
 		let color = PlatformColor(hex: colorHex) ?? .white
 		let isDark = color.relativeLuminance < 0.5
 

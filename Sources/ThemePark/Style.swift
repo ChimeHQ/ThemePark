@@ -14,7 +14,7 @@ public enum ControlState: Hashable, Sendable {
 	case inactive
 	case hover
 
-	#if os(macOS)
+#if os(macOS)
 	init(controlActiveState: ControlActiveState) {
 		switch controlActiveState {
 		case .active, .key:
@@ -25,23 +25,24 @@ public enum ControlState: Hashable, Sendable {
 			self = .active
 		}
 	}
-	#endif
+#endif
 }
 
-public struct Style : Hashable {
-	public let font: PlatformFont?
+public struct Style: Hashable {
 	public let color: PlatformColor
+	public let font: PlatformFont?
 
-	public init(font: PlatformFont?, color: PlatformColor) {
-		self.font = font
+	public init(color: PlatformColor, font: PlatformFont? = nil) {
 		self.color = color
+		self.font = font
 	}
 
-	public init?(font: PlatformFont?, color: PlatformColor?) {
-		guard let color else { return nil}
-		
-		self.font = font
-		self.color = color
+	public var attributes: [NSAttributedString.Key: Any] {
+		if let font {
+			return [.foregroundColor: color, .font: font]
+		}
+
+		return [.foregroundColor: color]
 	}
 }
 
@@ -56,10 +57,15 @@ public struct Variant: Hashable, Sendable {
 }
 
 public struct Query: Hashable, Sendable {
-	public enum Key : Hashable, Sendable {
-		case editorBackground
+	public enum Key: Hashable, Sendable {
+		public enum Editor: Hashable, Sendable {
+			case background
+			case accessoryForeground
+			case accessoryBackground
+			case cursor
+		}
 
-		case syntaxDefault
+		case editor(Editor)
 		case syntax(SyntaxSpecifier)
 	}
 
@@ -83,12 +89,22 @@ public struct Query: Hashable, Sendable {
 }
 
 public protocol Styling {
-	func style(for query: Query) -> Style?
+	func style(for query: Query) -> Style
 	var supportedVariants: Set<Variant> { get }
 }
 
 extension Styling {
-	public func style(for key: Query.Key) -> Style? {
-		style(for: Query(key: key, context: .init(colorScheme: .light)))
+	public func color(for query: Query) -> PlatformColor {
+		style(for: query).color
+	}
+
+	public func font(for query: Query) -> PlatformFont? {
+		style(for: query).font
+	}
+
+	public func highlightsQueryCaptureStyle(for name: String, context: Query.Context) -> Style {
+		let specifier = SyntaxSpecifier(highlightsQueryCapture: name) ?? .text
+
+		return style(for: .init(key: .syntax(specifier), context: context))
 	}
 }

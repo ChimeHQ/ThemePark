@@ -53,20 +53,20 @@ public enum SyntaxSpecifier: Hashable, Sendable {
 		case semanticallySignificant
 	}
 
-	public enum Entity: Hashable, Sendable {
+	public enum Identifier: Hashable, Sendable {
 		case variable
 		case constant
 		case function
 		case property
 		case parameter
+		case type
 	}
 
 	case text
 	case keyword(Keyword?)
-	case type
 	case literal(Literal?)
 	case comment(Comment?)
-	case entity(Entity?)
+	case identifier(Identifier?)
 	case context
 
 	public init?(highlightsQueryCapture name: String) {
@@ -83,6 +83,7 @@ extension SyntaxSpecifier {
 		"boolean": .literal(.boolean),
 		"conditional": .keyword(.conditional),
 		"constructor": .keyword(.definition(.constructor)),
+		"comment": .comment(nil),
 		"float": .literal(.number(.float)),
 		"function": .keyword(.definition(.function)),
 		"function.call": .keyword(.operator(.call(.function))),
@@ -96,7 +97,7 @@ extension SyntaxSpecifier {
 		"method": .keyword(.definition(.method)),
 		"number": .literal(.number(nil)),
 		"operator": .keyword(.operator(nil)),
-		"parameter": .entity(.parameter),
+		"parameter": .identifier(.parameter),
 		"property": .keyword(.definition(.property)),
 		"punctuation.delimiter": .keyword(.delimiter),
 		"punctuation.special": .keyword(nil),
@@ -108,8 +109,8 @@ extension SyntaxSpecifier {
 		"text.literal": .literal(.string(nil)),
 		"text.reference": .context,
 		"text.uri": .literal(.string(.uri)),
-		"type": .type,
-		"variable": .entity(.variable),
-		"variable.builtin": .entity(.variable),
+		"type": .identifier(.type),
+		"variable": .identifier(.variable),
+		"variable.builtin": .identifier(.variable),
 	]
 }

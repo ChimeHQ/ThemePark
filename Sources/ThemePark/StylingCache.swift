@@ -11,7 +11,7 @@ public final class StylingCache {
 }
 
 extension StylingCache: Styling {
-	public func style(for query: Query) -> Style? {
+	public func style(for query: Query) -> Style {
 		if let style = cache[query] {
 			return style
 		}

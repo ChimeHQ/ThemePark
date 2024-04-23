@@ -23,12 +23,16 @@ final class TextMateThemeTests: XCTestCase {
 		let theme = try TextMateTheme(contentsOf: url)
 
 		XCTAssertEqual(
-			theme.style(for: .editorBackground),
-			Style(font: nil, color: PlatformColor(hex: "#0C1021")!)
+			theme.style(for: Query(key: .editor(.background), context: .init(colorScheme: .light))),
+			Style(color: PlatformColor(hex: "#0C1021")!)
 		)
 		XCTAssertEqual(
-			theme.style(for: .syntaxDefault),
-			Style(font: nil, color: PlatformColor(hex: "#F8F8F8")!)
+			theme.style(for: Query(key: .syntax(.text), context: .init(colorScheme: .light))),
+			Style(color: PlatformColor(hex: "#F8F8F8")!)
+		)
+		XCTAssertEqual(
+			theme.style(for: Query(key: .syntax(.comment(nil)), context: .init(colorScheme: .light))),
+			Style(color: PlatformColor(hex: "#AEAEAE")!)
 		)
 	}
 }

@@ -3,14 +3,16 @@ import Foundation
 public struct XcodeTheme: Codable, Hashable, Sendable {
 	public let version: Int
 	public let sourceTextBackground: String
-	public let markupTextNormalColor: String
+	public let markupTextNormal: String
+	public let insertionPoint: String
 	public let syntaxColors: [String: String]
 
 	enum CodingKeys: String, CodingKey {
 		case version = "DVTFontAndColorVersion"
-		case markupTextNormalColor = "DVTMarkupTextNormalColor"
+		case markupTextNormal = "DVTMarkupTextNormalColor"
 		case syntaxColors = "DVTSourceTextSyntaxColors"
 		case sourceTextBackground = "DVTSourceTextBackground"
+		case insertionPoint = "DVTSourceTextInsertionPointColor"
 	}
 
 	public init(with data: Data) throws {
@@ -63,8 +65,8 @@ extension XcodeTheme {
 
 	private static let builtInThemeDirectories = [
 		"Contents/SharedFrameworks/DVTUserInterfaceKit.framework/Versions/Current/Resources/FontAndColorThemes",
-//		"Contents/SharedFrameworks/SourceEditor.framework/Versions/Current/Resources",
-//		"Contents/PlugIns/GPUDebugger.ideplugin/Contents/Frameworks/GPUToolsAdvancedUI.framework/Versions/Current/Resources"
+		//		"Contents/SharedFrameworks/SourceEditor.framework/Versions/Current/Resources",
+		//		"Contents/PlugIns/GPUDebugger.ideplugin/Contents/Frameworks/GPUToolsAdvancedUI.framework/Versions/Current/Resources"
 	]
 
 	public static var builtIn: [String: XcodeTheme] {
@@ -103,11 +105,11 @@ extension PlatformColor {
 		}
 
 		self.init(
-		   red: components[0],
-		   green: components[1],
-		   blue: components[2],
-		   alpha: components[3]
-	   )
+			red: components[0],
+			green: components[1],
+			blue: components[2],
+			alpha: components[3]
+		)
 	}
 }
 
@@ -117,22 +119,53 @@ extension XcodeTheme: Styling {
 			.flatMap { PlatformColor(componentsString: $0) }
 	}
 
-	private func syntaxStyle(for name: String) -> Style? {
-		let color = syntaxColor(for: "xcode.syntax.plain")
-
-		return Style(font: nil, color: color)
+	private var fallbackForegroundColor: PlatformColor {
+#if os(macOS)
+		syntaxColor(for: "xcode.syntax.plain") ?? .labelColor
+#endif
 	}
 
-	public func style(for query: Query) -> Style? {
-		switch query.key {
-		case .editorBackground:
-			let color = PlatformColor(componentsString: sourceTextBackground)
+	private var fallbackBackgroundColor: PlatformColor {
+#if os(macOS)
+		PlatformColor(componentsString: sourceTextBackground) ?? .windowBackgroundColor
+#endif
+	}
 
-			return Style(font: nil, color: color)
-		case .syntaxDefault:
+	private func syntaxStyle(for name: String) -> Style {
+		let color = syntaxColor(for: name) ?? fallbackForegroundColor
+
+		return Style(color: color, font: nil)
+	}
+
+	public func style(for query: Query) -> Style {
+		switch query.key {
+		case .editor(.background):
+			let color = fallbackBackgroundColor
+
+			return Style(color: color, font: nil)
+		case .editor(.cursor):
+			let color = PlatformColor(componentsString: insertionPoint) ?? fallbackForegroundColor
+
+			return Style(color: color, font: nil)
+		case .syntax(.comment(_)):
+			return syntaxStyle(for: "xcode.syntax.comment")
+		case .syntax(.literal(.string(_))):
+			return syntaxStyle(for: "xcode.syntax.string")
+		case .syntax(.keyword(_)):
+			return syntaxStyle(for: "xcode.syntax.keyword")
+		case .syntax(.text):
+			return syntaxStyle(for: "xcode.syntax.plain")
+		case .syntax(.identifier(.variable)):
+			return syntaxStyle(for: "xcode.syntax.identifier.variable")
+		case .syntax(.literal(.number(_))):
+			return syntaxStyle(for: "xcode.syntax.number")
+		case .syntax(.identifier(.type)):
+			return syntaxStyle(for: "xcode.syntax.identifier.type")
+		case .syntax(_):
+			print("asked for: ", query.key)
 			return syntaxStyle(for: "xcode.syntax.plain")
 		default:
-			return Style(font: nil, color: nil)
+			return Style(color: .red, font: nil)
 		}
 	}
 
@@ -183,7 +216,7 @@ public struct XcodeVariantTheme {
 }
 
 extension XcodeVariantTheme: Styling {
-	public func style(for query: Query) -> Style? {
+	public func style(for query: Query) -> Style {
 		switch query.context.variant.colorScheme {
 		case .dark:
 			dark?.style(for: query) ?? base.style(for: query)

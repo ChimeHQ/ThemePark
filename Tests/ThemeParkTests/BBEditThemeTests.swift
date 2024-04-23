@@ -15,12 +15,12 @@ final class BBEditThemeTests: XCTestCase {
 		let theme = try BBEditTheme(contentsOf: url)
 
 		XCTAssertEqual(
-			theme.style(for: .editorBackground),
-			Style(font: nil, color: PlatformColor(red: 0.077525, green: 0.077522, blue: 0.077524, alpha: 1.000000))
+			theme.style(for: Query(key: .editor(.background), context: .init(colorScheme: .light))),
+			Style(color: PlatformColor(red: 0.077525, green: 0.077522, blue: 0.077524, alpha: 1.000000))
 		)
 		XCTAssertEqual(
-			theme.style(for: .syntaxDefault),
-			Style(font: nil, color: PlatformColor(hue: 0.0, saturation: 0.0, brightness: 0.68, alpha: 1.0))
+			theme.style(for: Query(key: .syntax(.text), context: .init(colorScheme: .light))),
+			Style(color: PlatformColor(hue: 0.0, saturation: 0.0, brightness: 0.68, alpha: 1.0))
 		)
 	}
 }
