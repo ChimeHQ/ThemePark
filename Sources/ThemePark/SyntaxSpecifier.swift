@@ -71,7 +71,6 @@ public enum SyntaxSpecifier: Hashable, Sendable {
 	case context
 
 	public init?(highlightsQueryCapture name: String) {
-		print(name)
 		guard let specififer = SyntaxSpecifier.treeSitterQueryCaptureMap[name] else {
 			return nil
 		}
