@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/raymondjavaxx/ColorToolbox",
       "state" : {
-        "revision" : "77a4bcfd5073ca4f29d37bbce7fac20dd085eea2",
-        "version" : "1.0.1"
+        "revision" : "f5f668df9af9a31a6fee7f514c21992f4ab7384c",
+        "version" : "1.1.0"
       }
     }
   ],

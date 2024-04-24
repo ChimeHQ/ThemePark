@@ -5,18 +5,18 @@ import PackageDescription
 let package = Package(
 	name: "ThemePark",
 	platforms: [
-		.macOS(.v11),
+		.macOS(.v10_15),
 		.iOS(.v13),
-		.tvOS(.v14),
-		.watchOS(.v7),
-		.macCatalyst(.v14),
+		.tvOS(.v13),
+		.watchOS(.v6),
+		.macCatalyst(.v13),
 		.visionOS(.v1),
 	],
 	products: [
 		.library(name: "ThemePark", targets: ["ThemePark"]),
 	],
 	dependencies: [
-		.package(url: "https://github.com/raymondjavaxx/ColorToolbox", from: "1.0.1"),
+		.package(url: "https://github.com/raymondjavaxx/ColorToolbox", from: "1.1.0"),
 	],
 	targets: [
 		.target(name: "ThemePark", dependencies: ["ColorToolbox"]),
