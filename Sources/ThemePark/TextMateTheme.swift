@@ -108,6 +108,8 @@ extension TextMateTheme: Styling {
 			return resolveScope("variable")
 		case .syntax(.identifier(.type)):
 			return resolveScope("entity")
+		case .syntax(.identifier(.constant)):
+			return resolveScope("constant")
 		case .editor(.accessoryForeground):
 			let color = fallbackForegroundColor
 
