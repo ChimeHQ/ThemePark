@@ -26,6 +26,14 @@ extension PlatformColor {
 			lightening(by: ratio)
 		}
 	}
+
+#if os(macOS)
+	static let fallbackForegroundColor: PlatformColor = .labelColor
+	static let fallbackBackgroundColor: PlatformColor = .windowBackgroundColor
+#else
+	static let fallbackForegroundColor: PlatformColor = .labelColor
+	static let fallbackBackgroundColor: PlatformColor = .black
+#endif
 }
 
 public struct Style: Hashable {

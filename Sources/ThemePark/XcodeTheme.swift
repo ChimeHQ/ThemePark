@@ -124,15 +124,11 @@ extension XcodeTheme: Styling {
 	}
 
 	private var fallbackForegroundColor: PlatformColor {
-#if os(macOS)
-		syntaxColor(for: "xcode.syntax.plain") ?? .labelColor
-#endif
+		syntaxColor(for: "xcode.syntax.plain") ?? .fallbackForegroundColor
 	}
 
 	private var fallbackBackgroundColor: PlatformColor {
-#if os(macOS)
-		PlatformColor(componentsString: sourceTextBackground) ?? .windowBackgroundColor
-#endif
+		PlatformColor(componentsString: sourceTextBackground) ?? .fallbackBackgroundColor
 	}
 
 	private func syntaxStyle(for name: String) -> Style {

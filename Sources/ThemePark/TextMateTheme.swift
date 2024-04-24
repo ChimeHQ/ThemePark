@@ -60,11 +60,15 @@ extension TextMateTheme {
 
 extension TextMateTheme: Styling {
 	private var fallbackForegroundColor: PlatformColor {
-#if os(macOS)
 		let colorHex = settings.first?.settings["foreground"]
 
-		return colorHex.flatMap { PlatformColor(hex: $0) } ?? .labelColor
-#endif
+		return colorHex.flatMap { PlatformColor(hex: $0) } ?? .fallbackForegroundColor
+	}
+
+	private var fallbackBackgroundColor: PlatformColor {
+		let colorHex = settings.first?.settings["background"]
+
+		return colorHex.flatMap { PlatformColor(hex: $0) } ?? .fallbackBackgroundColor
 	}
 
 	private func resolveScope(_ scope: String) -> Style {
@@ -78,12 +82,16 @@ extension TextMateTheme: Styling {
 	public func style(for query: Query) -> Style {
 		switch query.key {
 		case .editor(.background), .gutter(.background):
-			let colorHex = settings.first?.settings["background"]
-			let color = PlatformColor(hex: colorHex!)!
+			let color = fallbackBackgroundColor
 
 			return Style(color: color, font: nil)
 		case .syntax(.text), .gutter(.label):
 			let color = fallbackForegroundColor
+
+			return Style(color: color, font: nil)
+		case .editor(.cursor):
+			let colorHex = settings.first?.settings["caret"] ?? ""
+			let color = PlatformColor(hex: colorHex) ?? fallbackForegroundColor
 
 			return Style(color: color, font: nil)
 		case .syntax(.comment(_)):
