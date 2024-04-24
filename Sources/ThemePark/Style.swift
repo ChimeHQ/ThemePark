@@ -9,25 +9,6 @@ public typealias PlatformColor = NSColor
 public typealias PlatformFont = NSFont
 #endif
 
-public enum ControlState: Hashable, Sendable {
-	case active
-	case inactive
-	case hover
-
-#if os(macOS)
-	init(controlActiveState: ControlActiveState) {
-		switch controlActiveState {
-		case .active, .key:
-			self = .active
-		case .inactive:
-			self = .inactive
-		@unknown default:
-			self = .active
-		}
-	}
-#endif
-}
-
 public struct Style: Hashable {
 	public let color: PlatformColor
 	public let font: PlatformFont?
@@ -54,38 +35,38 @@ public struct Variant: Hashable, Sendable {
 		self.colorScheme = colorScheme
 		self.colorSchemeContrast = colorSchemeContrast
 	}
-}
 
-public struct Query: Hashable, Sendable {
-	public enum Key: Hashable, Sendable {
-		public enum Editor: Hashable, Sendable {
-			case background
-			case accessoryForeground
-			case accessoryBackground
-			case cursor
-		}
-
-		case editor(Editor)
-		case syntax(SyntaxSpecifier)
-	}
-
-	public struct Context: Hashable, Sendable {
-		public var controlState: ControlState
-		public var variant: Variant
-
-		public init(controlState: ControlState = .active, colorScheme: ColorScheme, colorSchemeContrast: ColorSchemeContrast = .standard) {
-			self.controlState = controlState
-			self.variant = Variant(colorScheme: colorScheme, colorSchemeContrast: colorSchemeContrast)
+	#if canImport(AppKit)
+	public init (appearance: NSAppearance) {
+		switch appearance.name {
+		case .aqua:
+			self.init(colorScheme: .light, colorSchemeContrast: .standard)
+		case .accessibilityHighContrastAqua, .accessibilityHighContrastVibrantLight:
+			self.init(colorScheme: .light, colorSchemeContrast: .increased)
+		case .darkAqua:
+			self.init(colorScheme: .dark, colorSchemeContrast: .standard)
+		case .accessibilityHighContrastDarkAqua, .accessibilityHighContrastVibrantDark:
+			self.init(colorScheme: .light, colorSchemeContrast: .increased)
+		default:
+			self.init(colorScheme: .light, colorSchemeContrast: .standard)
 		}
 	}
 
-	public var key: Key
-	public var context: Context
-
-	public init(key: Key, context: Context) {
-		self.key = key
-		self.context = context
+	public var appearance: NSAppearance? {
+		switch (colorScheme, colorSchemeContrast) {
+		case (.light, .standard):
+			NSAppearance(named: .aqua)
+		case (.light, .increased):
+			NSAppearance(named: .accessibilityHighContrastAqua)
+		case (.dark, .standard):
+			NSAppearance(named: .darkAqua)
+		case (.dark, .increased):
+			NSAppearance(named: .accessibilityHighContrastDarkAqua)
+		default:
+			NSAppearance(named: .aqua)
+		}
 	}
+	#endif
 }
 
 public protocol Styling {
@@ -94,6 +75,10 @@ public protocol Styling {
 }
 
 extension Styling {
+	public func style(for key: Query.Key, context: Query.Context = .init(colorScheme: .light)) -> Style {
+		style(for: Query(key: key, context: context))
+	}
+	
 	public func color(for query: Query) -> PlatformColor {
 		style(for: query).color
 	}

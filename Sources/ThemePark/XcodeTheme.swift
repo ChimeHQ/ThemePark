@@ -5,6 +5,7 @@ public struct XcodeTheme: Codable, Hashable, Sendable {
 	public let sourceTextBackground: String
 	public let markupTextNormal: String
 	public let insertionPoint: String
+	public let invisibles: String
 	public let syntaxColors: [String: String]
 
 	enum CodingKeys: String, CodingKey {
@@ -13,6 +14,7 @@ public struct XcodeTheme: Codable, Hashable, Sendable {
 		case syntaxColors = "DVTSourceTextSyntaxColors"
 		case sourceTextBackground = "DVTSourceTextBackground"
 		case insertionPoint = "DVTSourceTextInsertionPointColor"
+		case invisibles = "DVTSourceTextInvisiblesColor"
 	}
 
 	public init(with data: Data) throws {
@@ -139,7 +141,7 @@ extension XcodeTheme: Styling {
 
 	public func style(for query: Query) -> Style {
 		switch query.key {
-		case .editor(.background):
+		case .editor(.background), .gutter(.background):
 			let color = fallbackBackgroundColor
 
 			return Style(color: color, font: nil)
@@ -153,7 +155,7 @@ extension XcodeTheme: Styling {
 			return syntaxStyle(for: "xcode.syntax.string")
 		case .syntax(.keyword(_)):
 			return syntaxStyle(for: "xcode.syntax.keyword")
-		case .syntax(.text):
+		case .syntax(.text), .gutter(.label):
 			return syntaxStyle(for: "xcode.syntax.plain")
 		case .syntax(.identifier(.variable)):
 			return syntaxStyle(for: "xcode.syntax.identifier.variable")
@@ -161,8 +163,11 @@ extension XcodeTheme: Styling {
 			return syntaxStyle(for: "xcode.syntax.number")
 		case .syntax(.identifier(.type)):
 			return syntaxStyle(for: "xcode.syntax.identifier.type")
+		case .syntax(.invisible):
+			let color = PlatformColor(componentsString: invisibles) ?? fallbackForegroundColor
+
+			return Style(color: color, font: nil)
 		case .syntax(_):
-			print("asked for: ", query.key)
 			return syntaxStyle(for: "xcode.syntax.plain")
 		default:
 			return Style(color: .red, font: nil)

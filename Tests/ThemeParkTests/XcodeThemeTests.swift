@@ -7,6 +7,7 @@ final class XcodeThemeTests: XCTestCase {
 		let theme = try XcodeTheme(contentsOf: url)
 
 		XCTAssertEqual(theme.sourceTextBackground, "1 1 1 1")
+		XCTAssertEqual(theme.invisibles, "0.8 0.8 0.8 1")
 		XCTAssertEqual(theme.syntaxColors.count, 28)
 		XCTAssertEqual(theme.supportedVariants, [.init(colorScheme: .light)])
 
@@ -21,16 +22,24 @@ final class XcodeThemeTests: XCTestCase {
 		let theme = try XcodeTheme(contentsOf: url)
 
 		XCTAssertEqual(
-			theme.style(for: Query(key: .editor(.background), context: .init(colorScheme: .light))),
+			theme.style(for: .editor(.background)),
 			Style(color: PlatformColor(hex: "#ffffff")!)
 		)
 		XCTAssertEqual(
-			theme.style(for: Query(key: .syntax(.text), context: .init(colorScheme: .light))),
+			theme.style(for: .syntax(.text)),
 			Style(color: PlatformColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.85))
 		)
 		XCTAssertEqual(
-			theme.style(for: Query(key: .syntax(.comment(nil)), context: .init(colorScheme: .light))),
+			theme.style(for: .syntax(.comment(nil))),
 			Style(color: PlatformColor(red: 0.36526, green: 0.421879, blue: 0.475154, alpha: 1.0))
+		)
+		XCTAssertEqual(
+			theme.style(for: .gutter(.background)),
+			theme.style(for: .editor(.background))
+		)
+		XCTAssertEqual(
+			theme.style(for: .gutter(.label)),
+			theme.style(for: .syntax(.text))
 		)
 	}
 }

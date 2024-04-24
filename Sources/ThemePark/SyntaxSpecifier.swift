@@ -63,6 +63,7 @@ public enum SyntaxSpecifier: Hashable, Sendable {
 	}
 
 	case text
+	case invisible
 	case keyword(Keyword?)
 	case literal(Literal?)
 	case comment(Comment?)
