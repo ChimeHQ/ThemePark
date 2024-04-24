@@ -71,6 +71,7 @@ public enum SyntaxSpecifier: Hashable, Sendable {
 	case context
 
 	public init?(highlightsQueryCapture name: String) {
+		print(name)
 		guard let specififer = SyntaxSpecifier.treeSitterQueryCaptureMap[name] else {
 			return nil
 		}
@@ -83,12 +84,15 @@ extension SyntaxSpecifier {
 	private static let treeSitterQueryCaptureMap: [String: SyntaxSpecifier] = [
 		"boolean": .literal(.boolean),
 		"conditional": .keyword(.conditional),
+		"constant": .identifier(.constant),
+		"constant.builtin": .identifier(.constant),
 		"constructor": .keyword(.definition(.constructor)),
 		"comment": .comment(nil),
 		"float": .literal(.number(.float)),
 		"function": .keyword(.definition(.function)),
 		"function.call": .keyword(.operator(.call(.function))),
 		"function.macro": .keyword(.operator(.call(.macro))),
+		"function.method": .keyword(.definition(.method)),
 		"include": .keyword(.import),
 		"keyword": .keyword(nil),
 		"keyword.function": .keyword(.definition(.function)),

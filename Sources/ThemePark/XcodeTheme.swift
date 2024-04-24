@@ -3,6 +3,7 @@ import Foundation
 public struct XcodeTheme: Codable, Hashable, Sendable {
 	public let version: Int
 	public let sourceTextBackground: String
+	public let selection: String
 	public let markupTextNormal: String
 	public let insertionPoint: String
 	public let invisibles: String
@@ -13,6 +14,7 @@ public struct XcodeTheme: Codable, Hashable, Sendable {
 		case markupTextNormal = "DVTMarkupTextNormalColor"
 		case syntaxColors = "DVTSourceTextSyntaxColors"
 		case sourceTextBackground = "DVTSourceTextBackground"
+		case selection = "DVTSourceTextSelectionColor"
 		case insertionPoint = "DVTSourceTextInsertionPointColor"
 		case invisibles = "DVTSourceTextInvisiblesColor"
 	}
@@ -149,6 +151,12 @@ extension XcodeTheme: Styling {
 			let color = PlatformColor(componentsString: insertionPoint) ?? fallbackForegroundColor
 
 			return Style(color: color, font: nil)
+		case .editor(.accessoryForeground):
+			return syntaxStyle(for: "xcode.syntax.plain")
+		case .editor(.accessoryBackground):
+			let color = fallbackBackgroundColor.emphasize(by: 0.4)
+
+			return Style(color: color)
 		case .syntax(.comment(_)):
 			return syntaxStyle(for: "xcode.syntax.comment")
 		case .syntax(.literal(.string(_))):
@@ -169,8 +177,6 @@ extension XcodeTheme: Styling {
 			return Style(color: color, font: nil)
 		case .syntax(_):
 			return syntaxStyle(for: "xcode.syntax.plain")
-		default:
-			return Style(color: .red, font: nil)
 		}
 	}
 

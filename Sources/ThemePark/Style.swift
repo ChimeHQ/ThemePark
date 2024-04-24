@@ -9,6 +9,25 @@ public typealias PlatformColor = NSColor
 public typealias PlatformFont = NSFont
 #endif
 
+extension PlatformColor {
+	/// Makes a darker color lighter and a ligher color darker
+	public func emphasize(by ratio: CGFloat) -> PlatformColor {
+		let positive = ratio > 0
+		let dark = relativeLuminance < 0.5
+
+		return switch (positive, dark) {
+		case (true, true):
+			lightening(by: ratio)
+		case (true, false):
+			darkening(by: ratio)
+		case (false, true):
+			darkening(by: ratio)
+		case (false, false):
+			lightening(by: ratio)
+		}
+	}
+}
+
 public struct Style: Hashable {
 	public let color: PlatformColor
 	public let font: PlatformFont?
