@@ -1,31 +1,31 @@
 import Foundation
 
 public enum SyntaxSpecifier: Hashable, Sendable {
-	public enum Keyword: Hashable, Sendable {
-		public enum Definition: Hashable, Sendable {
+	public enum Operator: Hashable, Sendable {
+		public enum Call: Hashable, Sendable {
 			case function
 			case method
 			case macro
-			case constructor
-			case property
-		}
-		
-		public enum Operator: Hashable, Sendable {
-			public enum Call: Hashable, Sendable {
-				case function
-				case method
-				case macro
-			}
-
-			case call(Call?)
 		}
 
+		case call(Call?)
+	}
+
+	public enum Definition: Hashable, Sendable {
+		case function
+		case method
+		case macro
+		case constructor
+		case property
+	}
+
+	public enum Keyword: Hashable, Sendable {
 		case definition(Definition?)
 		case `import`
 		case conditional
 		case control
-		case `operator`(Operator?)
 		case delimiter
+		case `operator`(Operator?)
 	}
 
 	public enum Literal: Hashable, Sendable {
@@ -62,6 +62,10 @@ public enum SyntaxSpecifier: Hashable, Sendable {
 		case type
 	}
 
+	public enum Punctuation: Hashable, Sendable {
+		case delimiter
+	}
+
 	case text
 	case invisible
 	case keyword(Keyword?)
@@ -69,6 +73,9 @@ public enum SyntaxSpecifier: Hashable, Sendable {
 	case comment(Comment?)
 	case identifier(Identifier?)
 	case context
+	case `operator`(Operator?)
+	case punctuation(Punctuation?)
+	case definition(Definition?)
 
 	public init?(highlightsQueryCapture name: String) {
 		guard let specififer = SyntaxSpecifier.treeSitterQueryCaptureMap[name] else {
@@ -85,26 +92,26 @@ extension SyntaxSpecifier {
 		"conditional": .keyword(.conditional),
 		"constant": .identifier(.constant),
 		"constant.builtin": .identifier(.constant),
-		"constructor": .keyword(.definition(.constructor)),
+		"constructor": .definition(.constructor),
 		"comment": .comment(nil),
 		"float": .literal(.number(.float)),
-		"function": .keyword(.definition(.function)),
-		"function.call": .keyword(.operator(.call(.function))),
-		"function.macro": .keyword(.operator(.call(.macro))),
-		"function.method": .keyword(.definition(.method)),
+		"function": .definition(.function),
+		"function.call": .operator(.call(.function)),
+		"function.macro": .operator(.call(.macro)),
+		"function.method": .definition(.method),
 		"include": .keyword(.import),
 		"keyword": .keyword(nil),
 		"keyword.function": .keyword(.definition(.function)),
 		"keyword.operator": .keyword(.operator(nil)),
 		"keyword.return": .keyword(.control),
 		"label": .context,
-		"method": .keyword(.definition(.method)),
+		"method": .definition(.method),
 		"number": .literal(.number(nil)),
-		"operator": .keyword(.operator(nil)),
+		"operator": .operator(nil),
 		"parameter": .identifier(.parameter),
-		"property": .keyword(.definition(.property)),
-		"punctuation.delimiter": .keyword(.delimiter),
-		"punctuation.special": .keyword(nil),
+		"property": .identifier(.property),
+		"punctuation.delimiter": .punctuation(.delimiter),
+		"punctuation.special": .punctuation(nil),
 		"repeat": .keyword(.control),
 		"string": .literal(.string(nil)),
 		"string.escape": .literal(.string(.escape)),
