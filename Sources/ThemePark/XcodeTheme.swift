@@ -195,6 +195,7 @@ public struct XcodeVariantTheme {
 		self.dark = dark
 	}
 
+#if canImport(AppKit) && !targetEnvironment(macCatalyst)
 	public static var all: [XcodeVariantTheme] {
 		let allThemes = XcodeTheme.all
 
@@ -220,6 +221,7 @@ public struct XcodeVariantTheme {
 
 		return variants
 	}
+#endif
 }
 
 extension XcodeVariantTheme: Styling {

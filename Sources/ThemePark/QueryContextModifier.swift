@@ -11,6 +11,18 @@ extension EnvironmentValues {
 	}
 }
 
+extension View {
+	func plaformOnHover(perform block: @escaping (Bool) -> Void) -> some View {
+		#if os(macOS) || os(iOS)
+		if #available(iOS 13.4, *) {
+			return self.onHover(perform: block)
+		}
+		#endif
+
+		return self
+	}
+}
+
 struct QueryContextModifier: ViewModifier {
 #if os(macOS)
 	@Environment(\.controlActiveState) private var controlActiveState
@@ -20,17 +32,24 @@ struct QueryContextModifier: ViewModifier {
 	@State private var hovering = false
 
 	private var context: Query.Context {
+#if os(macOS)
 		.init(
 			controlState: .init(controlActiveState: controlActiveState),
 			colorScheme: colorScheme,
 			colorSchemeContrast: colorSchemeContrast
 		)
+#else
+		.init(
+			colorScheme: colorScheme,
+			colorSchemeContrast: colorSchemeContrast
+		)
+#endif
 	}
 
 	func body(content: Content) -> some View {
 		content
 			.environment(\.styleQueryContext, context)
-			.onHover(perform: { self.hovering = $0 })
+			.plaformOnHover(perform: { self.hovering = $0 })
 	}
 }
 
@@ -42,23 +61,11 @@ extension View {
 }
 
 struct ForegroundColorQueryModifier<Styler: Styling>: ViewModifier {
-#if os(macOS)
-	@Environment(\.controlActiveState) private var controlActiveState
-#endif
-	@Environment(\.colorScheme) private var colorScheme
-	@Environment(\.colorSchemeContrast) private var colorSchemeContrast
+	@Environment(\.styleQueryContext) private var context
 	@State private var hovering = false
 
 	let key: Query.Key
 	let styler: Styler
-
-	private var context: Query.Context {
-		.init(
-			controlState: .init(controlActiveState: controlActiveState),
-			colorScheme: colorScheme,
-			colorSchemeContrast: colorSchemeContrast
-		)
-	}
 
 	var foregroundColor: PlatformColor {
 		styler.color(for: Query(key: key, context: context))
@@ -66,6 +73,7 @@ struct ForegroundColorQueryModifier<Styler: Styling>: ViewModifier {
 
 	func body(content: Content) -> some View {
 		content
+			.themeSensitive()
 			.foregroundColor(Color(foregroundColor))
 	}
 }

@@ -31,7 +31,7 @@ extension PlatformColor {
 	static let fallbackForegroundColor: PlatformColor = .labelColor
 	static let fallbackBackgroundColor: PlatformColor = .windowBackgroundColor
 #else
-	static let fallbackForegroundColor: PlatformColor = .labelColor
+	static let fallbackForegroundColor: PlatformColor = .label
 	static let fallbackBackgroundColor: PlatformColor = .black
 #endif
 }
