@@ -11,18 +11,7 @@ extension EnvironmentValues {
 	}
 }
 
-extension View {
-	func plaformOnHover(perform block: @escaping (Bool) -> Void) -> some View {
-		#if os(macOS) || os(iOS)
-		if #available(iOS 13.4, *) {
-			return self.onHover(perform: block)
-		}
-		#endif
-
-		return self
-	}
-}
-
+@available(iOS 13.4, *)
 struct QueryContextModifier: ViewModifier {
 #if os(macOS)
 	@Environment(\.controlActiveState) private var controlActiveState
@@ -49,10 +38,13 @@ struct QueryContextModifier: ViewModifier {
 	func body(content: Content) -> some View {
 		content
 			.environment(\.styleQueryContext, context)
-			.plaformOnHover(perform: { self.hovering = $0 })
+#if os(macOS) || os(iOS)
+			.onHover(perform: { self.hovering = $0 })
+#endif
 	}
 }
 
+@available(iOS 13.4, *)
 extension View {
 	/// Adds `EnvironmentValues.styleQueryContext` to the environment for use with ThemePark `Query`.
 	public func themeSensitive() -> some View {
@@ -60,9 +52,9 @@ extension View {
 	}
 }
 
+@available(iOS 13.4, *)
 struct ForegroundColorQueryModifier<Styler: Styling>: ViewModifier {
 	@Environment(\.styleQueryContext) private var context
-	@State private var hovering = false
 
 	let key: Query.Key
 	let styler: Styler
@@ -78,6 +70,7 @@ struct ForegroundColorQueryModifier<Styler: Styling>: ViewModifier {
 	}
 }
 
+@available(iOS 13.4, *)
 extension View {
 	public func foregroundThemeColor<Styler: Styling>(_ key: Query.Key, styler: Styler) -> some View {
 		modifier(ForegroundColorQueryModifier(key: key, styler: styler))
