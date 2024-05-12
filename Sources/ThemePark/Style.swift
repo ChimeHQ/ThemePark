@@ -54,6 +54,27 @@ public struct Style: Hashable {
 	}
 }
 
+extension Style {
+	static func fallback(for query: Query) -> Style {
+		let lightScheme = query.context.variant.colorScheme == .light
+
+		switch query.key {
+		case .editor(.background), .gutter(.background), .editor(.accessoryBackground):
+#if os(macOS)
+			return Style(color: .windowBackgroundColor)
+#else
+			return Style(color: lightScheme ? .white : .black)
+#endif
+		default:
+#if os(macOS)
+			return Style(color: .labelColor)
+#else
+			return Style(color: .label)
+#endif
+		}
+	}
+}
+
 public struct Variant: Hashable, Sendable {
 	public var colorScheme: ColorScheme
 	public var colorSchemeContrast: ColorSchemeContrast
@@ -94,6 +115,64 @@ public struct Variant: Hashable, Sendable {
 		}
 	}
 	#endif
+}
+
+extension Variant: CaseIterable {
+	public static var allCases: [Variant] {
+		zip(ColorScheme.allCases, ColorSchemeContrast.allCases)
+			.map { Variant(colorScheme: $0, colorSchemeContrast: $1) }
+	}
+}
+
+extension Variant: Codable {
+	enum CodingKeys: String, CodingKey {
+		case colorScheme
+		case colorSchemeContrast
+	}
+
+	public init(from decoder: any Decoder) throws {
+		let values = try decoder.container(keyedBy: CodingKeys.self)
+
+		switch try values.decode(String.self, forKey: .colorScheme) {
+		case "dark":
+			self.colorScheme = .dark
+		case "light":
+			self.colorScheme = .light
+		default:
+			throw DecodingError.dataCorrupted(.init(codingPath: values.codingPath, debugDescription: "unrecogized value for colorScheme"))
+		}
+
+		switch try values.decode(String.self, forKey: .colorSchemeContrast) {
+		case "increased":
+			self.colorSchemeContrast = .increased
+		case "standard":
+			self.colorSchemeContrast = .standard
+		default:
+			throw DecodingError.dataCorrupted(.init(codingPath: values.codingPath, debugDescription: "unrecogized value for colorSchemeContrast"))
+		}
+	}
+
+	public func encode(to encoder: any Encoder) throws {
+		var container = encoder.container(keyedBy: CodingKeys.self)
+
+		switch colorScheme {
+		case .dark:
+			try container.encode("dark", forKey: .colorScheme)
+		case .light:
+			try container.encode("light", forKey: .colorScheme)
+		@unknown default:
+			try container.encode("light", forKey: .colorScheme)
+		}
+
+		switch colorSchemeContrast {
+		case .increased:
+			try container.encode("increased", forKey: .colorSchemeContrast)
+		case .standard:
+			try container.encode("standard", forKey: .colorSchemeContrast)
+		@unknown default:
+			try container.encode("standard", forKey: .colorSchemeContrast)
+		}
+	}
 }
 
 public protocol Styling {

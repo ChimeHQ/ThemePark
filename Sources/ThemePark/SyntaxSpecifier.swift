@@ -1,8 +1,8 @@
 import Foundation
 
-public enum SyntaxSpecifier: Hashable, Sendable {
-	public enum Operator: Hashable, Sendable {
-		public enum Call: Hashable, Sendable {
+public enum SyntaxSpecifier: Hashable, Sendable, Codable {
+	public enum Operator: Hashable, Sendable, Codable {
+		public enum Call: Hashable, Sendable, Codable, CaseIterable {
 			case function
 			case method
 			case macro
@@ -11,7 +11,7 @@ public enum SyntaxSpecifier: Hashable, Sendable {
 		case call(Call?)
 	}
 
-	public enum Definition: Hashable, Sendable {
+	public enum Definition: Hashable, Sendable, Codable, CaseIterable {
 		case function
 		case method
 		case macro
@@ -19,7 +19,7 @@ public enum SyntaxSpecifier: Hashable, Sendable {
 		case property
 	}
 
-	public enum Keyword: Hashable, Sendable {
+	public enum Keyword: Hashable, Sendable, Codable {
 		case definition(Definition?)
 		case `import`
 		case conditional
@@ -28,15 +28,15 @@ public enum SyntaxSpecifier: Hashable, Sendable {
 		case `operator`(Operator?)
 	}
 
-	public enum Literal: Hashable, Sendable {
-		public enum Number: Hashable, Sendable {
+	public enum Literal: Hashable, Sendable, Codable {
+		public enum Number: Hashable, Sendable, Codable, CaseIterable {
 			case float
 			case integer
 			case scientific
 			case octal
 		}
 
-		public enum String: Hashable, Sendable {
+		public enum String: Hashable, Sendable, Codable, CaseIterable {
 			case uri
 			case escape
 		}
@@ -47,13 +47,13 @@ public enum SyntaxSpecifier: Hashable, Sendable {
 		case regularExpression
 	}
 
-	public enum Comment: Hashable, Sendable {
+	public enum Comment: Hashable, Sendable, Codable, CaseIterable {
 		case line
 		case block
 		case semanticallySignificant
 	}
 
-	public enum Identifier: Hashable, Sendable {
+	public enum Identifier: Hashable, Sendable, Codable, CaseIterable {
 		case variable
 		case constant
 		case function
@@ -62,7 +62,7 @@ public enum SyntaxSpecifier: Hashable, Sendable {
 		case type
 	}
 
-	public enum Punctuation: Hashable, Sendable {
+	public enum Punctuation: Hashable, Sendable, Codable, CaseIterable {
 		case delimiter
 	}
 
@@ -124,4 +124,49 @@ extension SyntaxSpecifier {
 		"variable": .identifier(.variable),
 		"variable.builtin": .identifier(.variable),
 	]
+}
+
+extension SyntaxSpecifier: CaseIterable {
+	public static var allCases: [SyntaxSpecifier] {
+		let allKeywords = SyntaxSpecifier.Keyword.allCases.map { SyntaxSpecifier.keyword($0) } + [.keyword(nil)]
+		let allLiterals = SyntaxSpecifier.Literal.allCases.map { SyntaxSpecifier.literal($0) } + [.literal(nil)]
+		let allComments = SyntaxSpecifier.Comment.allCases.map { SyntaxSpecifier.comment($0) } + [.comment(nil)]
+		let allIdentifiers = SyntaxSpecifier.Identifier.allCases.map { SyntaxSpecifier.identifier($0) } + [.identifier(nil)]
+		let allOperators = SyntaxSpecifier.Operator.allCases.map { SyntaxSpecifier.operator($0) } + [.operator(nil)]
+		let allPunctuation = SyntaxSpecifier.Punctuation.allCases.map { SyntaxSpecifier.punctuation($0) } + [.punctuation(nil)]
+		let allDefinitions = SyntaxSpecifier.Definition.allCases.map { SyntaxSpecifier.definition($0) } + [.definition(nil)]
+
+		let base: [SyntaxSpecifier] = [
+			.text,
+			.invisible,
+			.context
+		]
+
+		return base + allKeywords + allLiterals + allComments + allIdentifiers + allOperators + allPunctuation + allDefinitions
+	}
+}
+
+extension SyntaxSpecifier.Operator: CaseIterable {
+	public static var allCases: [SyntaxSpecifier.Operator] {
+		let allCalls = Self.Call.allCases.map { Self.call($0) } + [.call(nil)]
+
+		return [Self.call(nil)] + allCalls
+	}
+}
+
+extension SyntaxSpecifier.Keyword: CaseIterable {
+	public static var allCases: [SyntaxSpecifier.Keyword] {
+		let allOperators = SyntaxSpecifier.Operator.allCases.map { Self.operator($0) } + [.operator(nil)]
+
+		return allOperators
+	}
+}
+
+extension SyntaxSpecifier.Literal: CaseIterable {
+	public static var allCases: [SyntaxSpecifier.Literal] {
+		let allStrings = Self.String.allCases.map { Self.string($0) } + [Self.string(nil)]
+		let allNumbers = Self.Number.allCases.map { Self.number($0) } + [Self.number(nil)]
+
+		return [.boolean, .regularExpression] + allNumbers + allStrings
+	}
 }
