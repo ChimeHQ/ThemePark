@@ -10,8 +10,15 @@ public struct ConstantStyler: Styling {
 		self.backgroundColor = backgroundColor
 	}
 
-	public func style(for query: ThemePark.Query) -> ThemePark.Style {
-		.init(color: foregroundColor, font: nil)
+	public func style(for query: ThemePark.Query) -> Style {
+		switch query.key {
+		case .editor(.background), .gutter(.background):
+			Style(color: backgroundColor, font: nil)
+		case .editor(.accessoryBackground):
+			Style(color: backgroundColor, font: nil)
+		default:
+			Style(color: foregroundColor, font: nil)
+		}
 	}
 
 	public var supportedVariants: Set<Variant> {
