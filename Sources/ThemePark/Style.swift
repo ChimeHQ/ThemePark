@@ -118,10 +118,12 @@ public struct Variant: Hashable, Sendable {
 }
 
 extension Variant: CaseIterable {
-	public static var allCases: [Variant] {
-		zip(ColorScheme.allCases, ColorSchemeContrast.allCases)
-			.map { Variant(colorScheme: $0, colorSchemeContrast: $1) }
-	}
+	public static let allCases: [Variant] = [
+		Variant(colorScheme: .light, colorSchemeContrast: .standard),
+		Variant(colorScheme: .light, colorSchemeContrast: .increased),
+		Variant(colorScheme: .dark, colorSchemeContrast: .standard),
+		Variant(colorScheme: .dark, colorSchemeContrast: .increased),
+	]
 }
 
 extension Variant: Codable {
