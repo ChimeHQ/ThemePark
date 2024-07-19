@@ -9,8 +9,6 @@ public typealias PlatformColor = NSColor
 public typealias PlatformFont = NSFont
 #endif
 
-import OSLog
-
 extension PlatformColor {
 	/// Makes a darker color lighter and a ligher color darker
 	public func emphasize(by ratio: CGFloat) -> PlatformColor {
@@ -58,14 +56,7 @@ public struct Style: Hashable {
 
 extension Style {
 	static func fallback(for query: Query) -> Style {
-		if #available(macOS 11.0, *) {
-			let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "Style")
-
-			logger.info("Generating fallback for: \(String(describing: query), privacy: .public)")
-		}
-
 		let lightScheme = query.context.variant.colorScheme == .light
-
 
 		switch query.key {
 		case .editor(.background), .gutter(.background), .editor(.accessoryBackground):
