@@ -40,7 +40,7 @@ let url = URL(...)
 let data = try Data(contentsOf: url, options: [])
 let theme = try TextMateTheme(with: data)
 
-let allInstalledThemes = TextMateTheme.all
+let urls = TextMateTheme.all
 ```
 
 Xcode Themes:
@@ -52,11 +52,7 @@ let url = URL(...)
 let data = try Data(contentsOf: url, options: [])
 let theme = try XcodeTheme(with: data)
 
-// [String: XcodeTheme], as XcodeTheme names are stored only on the file system
-let allInstalledThemes = XcodeTheme.all
-
-// consolidates Xcode themes by color scheme variant
-let allVariants = XcodeVariantTheme.all
+let urls = XcodeTheme.all
 ```
 
 BBEdit themes:
@@ -68,7 +64,7 @@ let url = URL(...)
 let data = try Data(contentsOf: url, options: [])
 let theme = try BBEditTheme(with: data)
 
-let allInstalledThemes = BBEditTheme.all
+let urls = BBEditTheme.all
 ```
 
 ### Resolving styles

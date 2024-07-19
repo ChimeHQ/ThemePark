@@ -12,9 +12,6 @@ final class XcodeThemeTests: XCTestCase {
 		XCTAssertEqual(theme.supportedVariants, [.init(colorScheme: .light)])
 
 		XCTAssertEqual(theme.syntaxColors["xcode.syntax.attribute"], "0.505801 0.371396 0.012096 1")
-
-		print(XcodeTheme.builtIn.keys)
-		print(XcodeTheme.userInstalled.keys)
 	}
 
 	func testSemanticQueries() throws {

@@ -150,15 +150,23 @@ extension SyntaxSpecifier.Operator: CaseIterable {
 	public static var allCases: [SyntaxSpecifier.Operator] {
 		let allCalls = Self.Call.allCases.map { Self.call($0) } + [.call(nil)]
 
-		return [Self.call(nil)] + allCalls
+		return allCalls
 	}
 }
 
 extension SyntaxSpecifier.Keyword: CaseIterable {
 	public static var allCases: [SyntaxSpecifier.Keyword] {
 		let allOperators = SyntaxSpecifier.Operator.allCases.map { Self.operator($0) } + [.operator(nil)]
+		let allDefinitions = SyntaxSpecifier.Definition.allCases.map { Self.definition($0) } + [.definition(nil)]
 
-		return allOperators
+		let base: [SyntaxSpecifier.Keyword] = [
+			.conditional,
+			.control,
+			.import,
+			.delimiter
+		]
+
+		return base + allOperators + allDefinitions
 	}
 }
 

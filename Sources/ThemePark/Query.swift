@@ -19,6 +19,19 @@ public enum ControlState: Hashable, Sendable, Codable, CaseIterable {
 #endif
 }
 
+extension ControlState: CustomDebugStringConvertible {
+	public var debugDescription: String {
+		switch self {
+		case .active:
+			"active"
+		case .inactive:
+			"inactive"
+		case .hover:
+			"hover"
+		}
+	}
+}
+
 public struct Query: Hashable, Sendable, Codable {
 	public enum Key: Hashable, Sendable, Codable {
 		public enum Editor: Hashable, Sendable, Codable, CaseIterable {

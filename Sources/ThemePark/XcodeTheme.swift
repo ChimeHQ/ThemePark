@@ -35,33 +35,21 @@ public struct XcodeTheme: Codable, Hashable, Sendable {
 import AppKit
 
 extension XcodeTheme {
-	private static func xcodeThemes(in directoryURL: URL) -> [String: XcodeTheme] {
+	private static func xcodeThemes(in directoryURL: URL) -> [URL] {
 		guard let themeUrls = try? FileManager.default.contentsOfDirectory(at: directoryURL, includingPropertiesForKeys: nil) else {
-			return [:]
+			return []
 		}
 
-		var themes = [String: XcodeTheme]()
-
-		for url in themeUrls {
-			guard url.pathExtension == "xccolortheme" else { continue }
-
-			if let theme = try? XcodeTheme(contentsOf: url) {
-				let name = url.deletingPathExtension().lastPathComponent
-
-				themes[name] = theme
-			}
-		}
-
-		return themes
+		return themeUrls.filter { $0.pathExtension == "xccolortheme" }
 	}
 
-	public static var userInstalled: [String: XcodeTheme] {
+	public static var userInstalled: [URL] {
 		let manager = FileManager.default
 
 		let libaryUrl = try? manager.url(for: .libraryDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
 
 		guard let parentUrl = libaryUrl?.appendingPathComponent("/Developer/Xcode/UserData/FontAndColorThemes", isDirectory: true) else {
-			return [:]
+			return []
 		}
 
 		return xcodeThemes(in: parentUrl)
@@ -73,26 +61,20 @@ extension XcodeTheme {
 		//		"Contents/PlugIns/GPUDebugger.ideplugin/Contents/Frameworks/GPUToolsAdvancedUI.framework/Versions/Current/Resources"
 	]
 
-	public static var builtIn: [String: XcodeTheme] {
+	public static var builtIn: [URL] {
 		guard let appUrl = NSWorkspace.shared.urlForApplication(withBundleIdentifier: "com.apple.dt.Xcode") else {
-			return [:]
+			return []
 		}
 
-		var themes = [String: XcodeTheme]()
+		return builtInThemeDirectories.flatMap { path in
+			let parentURL = appUrl.appendingPathComponent(path, isDirectory: true)
 
-		for parentPath in builtInThemeDirectories {
-			let parentURL = appUrl.appendingPathComponent(parentPath, isDirectory: true)
-
-			let newThemes = xcodeThemes(in: parentURL)
-
-			themes.merge(newThemes, uniquingKeysWith: { $1 })
+			return xcodeThemes(in: parentURL)
 		}
-
-		return themes
 	}
 
-	public static var all: [String: XcodeTheme] {
-		builtIn.merging(userInstalled, uniquingKeysWith: { $1 })
+	public static var all: [URL] {
+		builtIn + userInstalled
 	}
 }
 #endif
@@ -184,63 +166,63 @@ extension XcodeTheme: Styling {
 	}
 }
 
-public struct XcodeVariantTheme {
-	public let name: String
-	public let base: XcodeTheme
-	public let dark: XcodeTheme?
-
-	public init(name: String, base: XcodeTheme, dark: XcodeTheme?) {
-		self.name = name
-		self.base = base
-		self.dark = dark
-	}
-
-#if canImport(AppKit) && !targetEnvironment(macCatalyst)
-	public static var all: [XcodeVariantTheme] {
-		let allThemes = XcodeTheme.all
-
-		let lightVariants = allThemes.keys.filter({ $0.hasSuffix(" (Light)") })
-		let baseNames = lightVariants.map({ String($0.dropLast(8)) })
-
-		var variants = [XcodeVariantTheme]()
-
-		for name in baseNames {
-			let light = allThemes[name + " (Light)"]!
-			let dark = allThemes[name + " (Dark)"]
-
-			variants.append(XcodeVariantTheme(name: name, base: light, dark: dark))
-		}
-
-		for (name, theme) in allThemes {
-			if name.hasSuffix("(Light)") || name.hasSuffix("(Dark)") {
-				continue
-			}
-
-			variants.append(XcodeVariantTheme(name: name, base: theme, dark: nil))
-		}
-
-		return variants
-	}
-#endif
-}
-
-extension XcodeVariantTheme: Styling {
-	public func style(for query: Query) -> Style {
-		switch query.context.variant.colorScheme {
-		case .dark:
-			dark?.style(for: query) ?? base.style(for: query)
-		case .light:
-			base.style(for: query)
-		@unknown default:
-			base.style(for: query)
-		}
-	}
-
-	public var supportedVariants: Set<Variant> {
-		if dark != nil {
-			return [.init(colorScheme: .dark), .init(colorScheme: .light)]
-		}
-
-		return base.supportedVariants
-	}
-}
+//public struct XcodeVariantTheme {
+//	public let name: String
+//	public let base: URL
+//	public let dark: URL?
+//
+//	public init(name: String, base: URL, dark: URL?) {
+//		self.name = name
+//		self.base = base
+//		self.dark = dark
+//	}
+//
+//#if canImport(AppKit) && !targetEnvironment(macCatalyst)
+//	public static var all: [XcodeVariantTheme] {
+//		let allThemes = XcodeTheme.all
+//
+//		let lightVariants = allThemes.filter { $0.path.hasSuffix(" (Light).xccolortheme") }
+//		let baseNames = lightVariants.map({ String($0.dropLast(8)) })
+//
+//		var variants = [XcodeVariantTheme]()
+//
+//		for name in baseNames {
+//			let light = allThemes[name + " (Light).xccolortheme"]!
+//			let dark = allThemes[name + " (Dark).xccolortheme"]
+//
+//			variants.append(XcodeVariantTheme(name: name, base: light, dark: dark))
+//		}
+//
+//		for (name, theme) in allThemes {
+//			if name.hasSuffix("(Light)") || name.hasSuffix("(Dark)") {
+//				continue
+//			}
+//
+//			variants.append(XcodeVariantTheme(name: name, base: theme, dark: nil))
+//		}
+//
+//		return variants
+//	}
+//#endif
+//}
+//
+//extension XcodeVariantTheme: Styling {
+//	public func style(for query: Query) -> Style {
+//		switch query.context.variant.colorScheme {
+//		case .dark:
+//			dark?.style(for: query) ?? base.style(for: query)
+//		case .light:
+//			base.style(for: query)
+//		@unknown default:
+//			base.style(for: query)
+//		}
+//	}
+//
+//	public var supportedVariants: Set<Variant> {
+//		if dark != nil {
+//			return [.init(colorScheme: .dark), .init(colorScheme: .light)]
+//		}
+//
+//		return base.supportedVariants
+//	}
+//}

@@ -47,60 +47,37 @@ extension FileManager {
 
 		return root?.appendingPathComponent(component, isDirectory: true)
 	}
-
-	func namedURLs(at url: URL, extension ext: String) throws -> [(String, URL)] {
-		try contentsOfDirectory(at: url, includingPropertiesForKeys: nil)
-			.compactMap { url in
-				guard url.pathExtension == ext else { return nil }
-
-				let name = url.deletingPathExtension().lastPathComponent
-
-				return (name, url)
-			}
-	}
 }
 
 extension BBEditTheme {
-	public static var userInstalled: [String: BBEditTheme] {
+	public static var userInstalled: [URL] {
 		guard let appSupportURL = try? FileManager.default.applicationSupport(subDirectory: "BBEdit/Color Schemes") else {
-			return [:]
+			return []
 		}
 
-		var dict = [String: BBEditTheme]()
-
-		let pairs = try? FileManager.default.namedURLs(at: appSupportURL, extension: "bbColorScheme")
-
-		for pair in pairs ?? [] {
-			guard let theme = try? BBEditTheme(contentsOf: pair.1) else { continue }
-
-			dict[pair.0] = theme
+		guard let urls = try? FileManager.default.contentsOfDirectory(at: appSupportURL, includingPropertiesForKeys: nil) else {
+			return []
 		}
-
-		return dict
+		
+		return urls.filter { $0.pathExtension == "bbColorScheme" }
 	}
 
-	public static var builtIn: [String: BBEditTheme] {
+	public static var builtIn: [URL] {
 		guard let appUrl = NSWorkspace.shared.urlForApplication(withBundleIdentifier: "com.barebones.bbedit") else {
-			return [:]
+			return []
 		}
 
 		let themesURL = appUrl.appendingPathComponent("Contents/Resources/Color Schemes", isDirectory: true)
 
-		var dict = [String: BBEditTheme]()
-
-		let pairs = try? FileManager.default.namedURLs(at: themesURL, extension: "bbColorScheme")
-
-		for pair in pairs ?? [] {
-			guard let theme = try? BBEditTheme(contentsOf: pair.1) else { continue }
-
-			dict[pair.0] = theme
+		guard let urls = try? FileManager.default.contentsOfDirectory(at: themesURL, includingPropertiesForKeys: nil) else {
+			return []
 		}
 
-		return dict
+		return urls.filter { $0.pathExtension == "bbColorScheme" }
 	}
 
-	public static var all: [String: BBEditTheme] {
-		builtIn.merging(userInstalled, uniquingKeysWith: { $1 })
+	public static var all: [URL] {
+		builtIn + userInstalled
 	}
 }
 #endif

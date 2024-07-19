@@ -101,7 +101,7 @@ public struct CodableStyler {
 
 extension CodableStyler: Styling {
 	public func style(for query: Query) -> Style {
-		styles[query]?.style ?? Style.fallback(for: query)
+		return styles[query]?.style ?? Style.fallback(for: query)
 	}
 }
 

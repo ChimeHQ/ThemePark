@@ -39,7 +39,7 @@ public struct TextMateTheme: Codable, Hashable, Sendable {
 import AppKit
 
 extension TextMateTheme {
-	public static var all: [TextMateTheme] {
+	public static var all: [URL] {
 		let manager = FileManager.default
 
 		let url = try? manager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
@@ -48,12 +48,7 @@ extension TextMateTheme {
 			return []
 		}
 
-		guard let themePaths = try? manager.contentsOfDirectory(at: themesURL, includingPropertiesForKeys: nil) else {
-			return []
-		}
-
-		return themePaths
-			.compactMap { try? TextMateTheme(contentsOf: $0) }
+		return (try? manager.contentsOfDirectory(at: themesURL, includingPropertiesForKeys: nil)) ?? []
 	}
 }
 #endif
