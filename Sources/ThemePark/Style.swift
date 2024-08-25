@@ -36,6 +36,14 @@ extension PlatformColor {
 #endif
 }
 
+extension PlatformFont {
+#if os(macOS)
+	static let fallbackFont:  PlatformFont = .labelFont(ofSize: 0)
+#else
+	static let fallbackFont: PlatformFont = .preferredFont(forTextStyle: .body)
+#endif
+}
+
 public struct Style: Hashable {
 	public let color: PlatformColor
 	public let font: PlatformFont?
