@@ -171,6 +171,8 @@ extension XcodeTheme: Styling {
 			return Style(color: color)
 		case .syntax(.comment(_)):
 			return syntaxStyle(for: "xcode.syntax.comment")
+		case .syntax(.literal(.string(.uri))):
+			return syntaxStyle(for: "xcode.syntax.url")
 		case .syntax(.literal(.string(_))):
 			return syntaxStyle(for: "xcode.syntax.string")
 		case .syntax(.keyword(_)):
@@ -183,6 +185,10 @@ extension XcodeTheme: Styling {
 			return syntaxStyle(for: "xcode.syntax.number")
 		case .syntax(.identifier(.type)):
 			return syntaxStyle(for: "xcode.syntax.identifier.type")
+		case .syntax(.definition(.method)), .syntax(.definition(.function)), .syntax(.definition(.constructor)), .syntax(.definition(.property)):
+			return syntaxStyle(for: "xcode.syntax.identifier.function")
+		case .syntax(.definition(.macro)):
+			return syntaxStyle(for: "xcode.syntax.identifier..macro")
 		case .syntax(.invisible):
 			let color = PlatformColor(componentsString: invisibles) ?? fallbackForegroundColor
 			let font = PlatformFont(componentsString: invisibles) ?? fallbackFont
