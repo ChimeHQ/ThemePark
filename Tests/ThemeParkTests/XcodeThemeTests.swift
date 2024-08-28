@@ -17,18 +17,19 @@ final class XcodeThemeTests: XCTestCase {
 	func testSemanticQueries() throws {
 		let url = try XCTUnwrap(Bundle.module.url(forResource: "Default (Light)", withExtension: "xccolortheme", subdirectory: "Resources"))
 		let theme = try XcodeTheme(contentsOf: url)
+		let font = PlatformFont.systemFont(ofSize: 10.0)
 
 		XCTAssertEqual(
 			theme.style(for: .editor(.background)),
-			Style(color: PlatformColor(hex: "#ffffff")!)
+			Style(color: PlatformColor(hex: "#ffffff")!, font: font)
 		)
 		XCTAssertEqual(
 			theme.style(for: .syntax(.text)),
-			Style(color: PlatformColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.85))
+			Style(color: PlatformColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.85), font: font)
 		)
 		XCTAssertEqual(
 			theme.style(for: .syntax(.comment(nil))),
-			Style(color: PlatformColor(red: 0.36526, green: 0.421879, blue: 0.475154, alpha: 1.0))
+			Style(color: PlatformColor(red: 0.36526, green: 0.421879, blue: 0.475154, alpha: 1.0), font: font)
 		)
 		XCTAssertEqual(
 			theme.style(for: .gutter(.background)),
