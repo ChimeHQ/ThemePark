@@ -34,4 +34,4 @@ jobs:
         with:
           submodules: recursive
       - name: Test platform ${{ matrix.destination }}
-        run: set -o pipefail && xcodebuild -scheme ThemePark -destination "${{ matrix.destination }}" test | xcbeautify
+        run: set -o pipefail && xcodebuild -scheme ThemePark -destination "${{ matrix.destination }}" test
