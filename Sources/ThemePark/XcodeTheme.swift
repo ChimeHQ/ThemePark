@@ -137,7 +137,15 @@ extension XcodeTheme: Styling {
 	}
 
 	private var fallbackFont: PlatformFont {
-		syntaxFont(for: "xcode.syntax.plain") ?? .fallbackFont
+		if let font = syntaxFont(for: "xcode.syntax.plain") {
+			return font
+		}
+
+#if os(macOS)
+		return .labelFont(ofSize: 10)
+#else
+		return .preferredFont(forTextStyle: .body)
+#endif
 	}
 
 	private var fallbackBackgroundColor: PlatformColor {
