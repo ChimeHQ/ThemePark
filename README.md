@@ -109,7 +109,7 @@ Most theming systems use strings to provide semantic labels for syntax elements.
 This is a very common problem with tree-sitter highlight queries, which have no specification and are often completely ad-hoc.
 
 ```swift
-let specifier = SyntaxSpecifier(highlightsQueryCapture: catpureName)
+let specifier = SyntaxSpecifier(highlightsQueryCapture: captureName)
 ```
 
 ## Contributing and Collaboration
