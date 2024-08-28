@@ -4,15 +4,19 @@ public struct XcodeTheme: Codable, Hashable, Sendable {
 	public let version: Int
 	public let sourceTextBackground: String
 	public let selection: String
-	public let markupTextNormal: String
+	public let markupTextNormalColor: String
+	public let markupTextNormalFont: String
 	public let insertionPoint: String
 	public let invisibles: String
 	public let syntaxColors: [String: String]
+	public let syntaxFonts: [String: String]
 
 	enum CodingKeys: String, CodingKey {
 		case version = "DVTFontAndColorVersion"
-		case markupTextNormal = "DVTMarkupTextNormalColor"
+		case markupTextNormalColor = "DVTMarkupTextNormalColor"
+		case markupTextNormalFont = "DVTMarkupTextNormalFont"
 		case syntaxColors = "DVTSourceTextSyntaxColors"
+		case syntaxFonts = "DVTSourceTextSyntaxFonts"
 		case sourceTextBackground = "DVTSourceTextBackground"
 		case selection = "DVTSourceTextSelectionColor"
 		case insertionPoint = "DVTSourceTextInsertionPointColor"
@@ -99,14 +103,41 @@ extension PlatformColor {
 	}
 }
 
+extension PlatformFont {
+	convenience init?(componentsString: String) {
+		let components = componentsString
+			.components(separatedBy: " - ")
+
+		guard components.count == 2,
+			  let fontSize = Float(components[1])
+		else {
+			return nil
+		}
+
+		self.init(
+			name: components[0],
+			size: CGFloat(fontSize)
+		)
+	}
+}
+
 extension XcodeTheme: Styling {
 	public func syntaxColor(for name: String) -> PlatformColor? {
 		syntaxColors[name]
 			.flatMap { PlatformColor(componentsString: $0) }
 	}
 
+	public func syntaxFont(for name: String) -> PlatformFont? {
+		syntaxFonts[name]
+			.flatMap { PlatformFont(componentsString: $0) }
+	}
+
 	private var fallbackForegroundColor: PlatformColor {
 		syntaxColor(for: "xcode.syntax.plain") ?? .fallbackForegroundColor
+	}
+
+	private var fallbackFont: PlatformFont {
+		syntaxFont(for: "xcode.syntax.plain") ?? .fallbackFont
 	}
 
 	private var fallbackBackgroundColor: PlatformColor {
@@ -115,20 +146,23 @@ extension XcodeTheme: Styling {
 
 	private func syntaxStyle(for name: String) -> Style {
 		let color = syntaxColor(for: name) ?? fallbackForegroundColor
+		let font = syntaxFont(for: name) ?? fallbackFont
 
-		return Style(color: color, font: nil)
+		return Style(color: color, font: font)
 	}
 
 	public func style(for query: Query) -> Style {
 		switch query.key {
 		case .editor(.background), .gutter(.background):
 			let color = fallbackBackgroundColor
+			let font = fallbackFont
 
-			return Style(color: color, font: nil)
+			return Style(color: color, font: font)
 		case .editor(.cursor):
 			let color = PlatformColor(componentsString: insertionPoint) ?? fallbackForegroundColor
+			let font = PlatformFont(componentsString: insertionPoint) ?? fallbackFont
 
-			return Style(color: color, font: nil)
+			return Style(color: color, font: font)
 		case .editor(.accessoryForeground):
 			return syntaxStyle(for: "xcode.syntax.plain")
 		case .editor(.accessoryBackground):
@@ -137,6 +171,8 @@ extension XcodeTheme: Styling {
 			return Style(color: color)
 		case .syntax(.comment(_)):
 			return syntaxStyle(for: "xcode.syntax.comment")
+		case .syntax(.literal(.string(.uri))):
+			return syntaxStyle(for: "xcode.syntax.url")
 		case .syntax(.literal(.string(_))):
 			return syntaxStyle(for: "xcode.syntax.string")
 		case .syntax(.keyword(_)):
@@ -149,10 +185,15 @@ extension XcodeTheme: Styling {
 			return syntaxStyle(for: "xcode.syntax.number")
 		case .syntax(.identifier(.type)):
 			return syntaxStyle(for: "xcode.syntax.identifier.type")
+		case .syntax(.definition(.method)), .syntax(.definition(.function)), .syntax(.definition(.constructor)), .syntax(.definition(.property)):
+			return syntaxStyle(for: "xcode.syntax.identifier.function")
+		case .syntax(.definition(.macro)):
+			return syntaxStyle(for: "xcode.syntax.identifier..macro")
 		case .syntax(.invisible):
 			let color = PlatformColor(componentsString: invisibles) ?? fallbackForegroundColor
+			let font = PlatformFont(componentsString: invisibles) ?? fallbackFont
 
-			return Style(color: color, font: nil)
+			return Style(color: color, font: font)
 		case .syntax(_):
 			return syntaxStyle(for: "xcode.syntax.plain")
 		}
