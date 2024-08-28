@@ -36,6 +36,16 @@ extension PlatformColor {
 #endif
 }
 
+extension PlatformFont {
+	static var fallbackFont: PlatformFont {
+#if os(macOS)
+		.labelFont(ofSize: 10)
+#else
+		.preferredFont(forTextStyle: .body)
+#endif
+	}
+}
+
 public struct Style: Hashable {
 	public let color: PlatformColor
 	public let font: PlatformFont?
@@ -84,7 +94,7 @@ public struct Variant: Hashable, Sendable {
 		self.colorSchemeContrast = colorSchemeContrast
 	}
 
-	#if canImport(AppKit)
+	#if os(macOS)
 	public init (appearance: NSAppearance) {
 		switch appearance.name {
 		case .aqua:

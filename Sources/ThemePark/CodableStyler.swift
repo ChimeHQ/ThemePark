@@ -6,6 +6,7 @@ enum CodableColor: Codable {
 	case catalog(String)
 
 	init(_ color: PlatformColor) {
+#if os(macOS)
 		switch color.type {
 		case .componentBased:
 			let cgColor = color.cgColor
@@ -20,6 +21,13 @@ enum CodableColor: Codable {
 		@unknown default:
 			preconditionFailure()
 		}
+#else
+		let cgColor = color.cgColor
+		let colorSpaceName = cgColor.colorSpace?.name as? String ?? ""
+		let components = cgColor.components ?? []
+
+		self = .components(colorSpaceName, components)
+#endif
 	}
 
 	var color: PlatformColor? {
@@ -34,7 +42,11 @@ enum CodableColor: Codable {
 
 			return PlatformColor(cgColor: cgColor)
 		case let .catalog(name):
+#if os(macOS)
 			return PlatformColor(named: name)
+#else
+			return nil
+#endif
 		}
 	}
 }

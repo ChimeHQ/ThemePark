@@ -38,7 +38,7 @@ public struct BBEditTheme: Decodable, Hashable, Sendable {
 	}
 }
 
-#if canImport(AppKit)
+#if os(macOS)
 import AppKit
 
 extension FileManager {
