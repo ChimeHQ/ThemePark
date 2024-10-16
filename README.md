@@ -72,7 +72,7 @@ let urls = BBEditTheme.all
 
 ThemePark's `Styling` protocol can make use of the SwiftUI environment to adjust for color scheme, contrast, and hover state. You can expose this to your view heirarchy with a modifier:
 
-```
+```swift
 import SwiftUI
 import ThemePark
 
@@ -86,7 +86,7 @@ struct ThemedView: View {
 
 Executing queries on a theme:
 
-```
+```swift
 let styler: any Styling = TextMateTheme.all.randomElement()!
 let query = Query(key: .editorBackground, context: .init(colorScheme: .dark))
 
