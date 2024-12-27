@@ -16,9 +16,9 @@ on:
 jobs:
   test:
     name: Test
-    runs-on: macOS-14
+    runs-on: macOS-15
     env:
-      DEVELOPER_DIR: /Applications/Xcode_16.1.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode_16.1.app
     strategy:
       matrix:
         destination:
@@ -28,7 +28,5 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
       - name: Test platform ${{ matrix.destination }}
         run: set -o pipefail && xcodebuild -scheme ThemePark -destination "${{ matrix.destination }}" test
