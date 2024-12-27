@@ -17,19 +17,14 @@ final class XcodeThemeTests: XCTestCase {
 	func testSemanticQueries() throws {
 		let url = try XCTUnwrap(Bundle.module.url(forResource: "Default (Light)", withExtension: "xccolortheme", subdirectory: "Resources"))
 		let theme = try XcodeTheme(contentsOf: url)
-#if os(macOS)
-		let fallbackFont = PlatformFont.systemFont(ofSize: 10.0)
-#else
-		let fallbackFont = PlatformFont.preferredFont(forTextStyle: .body)
-#endif
 
 		// color equality here is actually quite tricky
 		XCTAssertEqual(
 			theme.style(for: .editor(.background)),
-			Style(color: PlatformColor(hex: "#ffffff")!, font: fallbackFont)
+			Style(color: PlatformColor(hex: "#ffffff")!)
 		)
 		XCTAssertEqual(
-			theme.style(for: .syntax(.text)).color.toHex(),
+			theme.style(for: .syntax(.text(nil))).color.toHex(),
 			PlatformColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.85).toHex()
 		)
 		XCTAssertEqual(
@@ -42,7 +37,7 @@ final class XcodeThemeTests: XCTestCase {
 		)
 		XCTAssertEqual(
 			theme.style(for: .gutter(.label)),
-			theme.style(for: .syntax(.text))
+			theme.style(for: .syntax(.text(nil)))
 		)
 	}
 }

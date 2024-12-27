@@ -19,7 +19,7 @@ final class BBEditThemeTests: XCTestCase {
 			PlatformColor(red: 0.077525, green: 0.077522, blue: 0.077524, alpha: 1.000000).toHex()
 		)
 		XCTAssertEqual(
-			theme.style(for: Query(key: .syntax(.text), context: .init(colorScheme: .light))).color.toHex(),
+			theme.style(for: Query(key: .syntax(.text(nil)), context: .init(colorScheme: .light))).color.toHex(),
 			PlatformColor(hue: 0.0, saturation: 0.0, brightness: 0.68, alpha: 1.0).toHex()
 		)
 	}

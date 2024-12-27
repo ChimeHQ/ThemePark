@@ -28,8 +28,8 @@ final class CodableStylerTests: XCTestCase {
 		)
 
 		XCTAssertEqual(
-			mock.style(for: .syntax(.text), context: context),
-			theme.style(for: .syntax(.text), context: context)
+			mock.style(for: .syntax(.text(nil)), context: context),
+			theme.style(for: .syntax(.text(nil)), context: context)
 		)
 	}
 
@@ -44,8 +44,8 @@ final class CodableStylerTests: XCTestCase {
 		)
 
 		XCTAssertEqual(
-			mock.style(for: .syntax(.text), context: context),
-			theme.style(for: .syntax(.text), context: context)
+			mock.style(for: .syntax(.text(nil)), context: context),
+			theme.style(for: .syntax(.text(nil)), context: context)
 		)
 	}
 
@@ -64,8 +64,8 @@ final class CodableStylerTests: XCTestCase {
 		)
 
 		XCTAssertEqual(
-			mock.style(for: .syntax(.text), context: context),
-			decodedTheme.style(for: .syntax(.text), context: context)
+			mock.style(for: .syntax(.text(nil)), context: context),
+			decodedTheme.style(for: .syntax(.text(nil)), context: context)
 		)
 	}
 }

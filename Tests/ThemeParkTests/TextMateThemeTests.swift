@@ -27,7 +27,7 @@ final class TextMateThemeTests: XCTestCase {
 			Style(color: PlatformColor(hex: "#0C1021")!)
 		)
 		XCTAssertEqual(
-			theme.style(for: Query(key: .syntax(.text), context: .init(colorScheme: .light))),
+			theme.style(for: Query(key: .syntax(.text(nil)), context: .init(colorScheme: .light))),
 			Style(color: PlatformColor(hex: "#F8F8F8")!)
 		)
 		XCTAssertEqual(
