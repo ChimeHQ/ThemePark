@@ -136,8 +136,8 @@ extension XcodeTheme: Styling {
 		syntaxColor(for: "xcode.syntax.plain") ?? .fallbackForegroundColor
 	}
 
-	private var fallbackFont: PlatformFont {
-		syntaxFont(for: "xcode.syntax.plain") ?? PlatformFont.fallbackFont
+	private var fallbackFont: PlatformFont? {
+		syntaxFont(for: "xcode.syntax.plain")
 	}
 
 	private var fallbackBackgroundColor: PlatformColor {
@@ -146,7 +146,7 @@ extension XcodeTheme: Styling {
 
 	private func syntaxStyle(for name: String) -> Style {
 		let color = syntaxColor(for: name) ?? fallbackForegroundColor
-		let font = syntaxFont(for: name) ?? fallbackFont
+		let font = syntaxFont(for: name)
 
 		return Style(color: color, font: font)
 	}
@@ -177,7 +177,7 @@ extension XcodeTheme: Styling {
 			return syntaxStyle(for: "xcode.syntax.string")
 		case .syntax(.keyword(_)):
 			return syntaxStyle(for: "xcode.syntax.keyword")
-		case .syntax(.text), .gutter(.label):
+		case .syntax(.text(_)), .gutter(.label):
 			return syntaxStyle(for: "xcode.syntax.plain")
 		case .syntax(.identifier(.variable)):
 			return syntaxStyle(for: "xcode.syntax.identifier.variable")

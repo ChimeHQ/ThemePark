@@ -212,7 +212,7 @@ extension Styling {
 	}
 
 	public func highlightsQueryCaptureStyle(for name: String, context: Query.Context) -> Style {
-		let specifier = SyntaxSpecifier(highlightsQueryCapture: name) ?? .text
+		let specifier = SyntaxSpecifier(highlightsQueryCapture: name) ?? .text(nil)
 
 		return style(for: .init(key: .syntax(specifier), context: context))
 	}

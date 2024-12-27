@@ -66,7 +66,12 @@ public enum SyntaxSpecifier: Hashable, Sendable, Codable {
 		case delimiter
 	}
 
-	case text
+	public enum Text: Hashable, Sendable, Codable, CaseIterable {
+		case emphasis
+		case strong
+	}
+
+	case text(Text?)
 	case invisible
 	case keyword(Keyword?)
 	case literal(Literal?)
@@ -117,8 +122,10 @@ extension SyntaxSpecifier {
 		"string.escape": .literal(.string(.escape)),
 		"string.regex": .literal(.regularExpression),
 		"string.uri": .literal(.string(.uri)),
+		"text.emphasis": .text(.emphasis),
 		"text.literal": .literal(.string(nil)),
 		"text.reference": .context,
+		"text.strong": .text(.strong),
 		"text.uri": .literal(.string(.uri)),
 		"type": .identifier(.type),
 		"variable": .identifier(.variable),
@@ -135,14 +142,14 @@ extension SyntaxSpecifier: CaseIterable {
 		let allOperators = SyntaxSpecifier.Operator.allCases.map { SyntaxSpecifier.operator($0) } + [.operator(nil)]
 		let allPunctuation = SyntaxSpecifier.Punctuation.allCases.map { SyntaxSpecifier.punctuation($0) } + [.punctuation(nil)]
 		let allDefinitions = SyntaxSpecifier.Definition.allCases.map { SyntaxSpecifier.definition($0) } + [.definition(nil)]
+		let allText = SyntaxSpecifier.Text.allCases.map { SyntaxSpecifier.text($0) } + [.text(nil)]
 
 		let base: [SyntaxSpecifier] = [
-			.text,
 			.invisible,
 			.context
 		]
 
-		return base + allKeywords + allLiterals + allComments + allIdentifiers + allOperators + allPunctuation + allDefinitions
+		return base + allText + allKeywords + allLiterals + allComments + allIdentifiers + allOperators + allPunctuation + allDefinitions
 	}
 }
 
