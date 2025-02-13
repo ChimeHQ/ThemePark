@@ -6,7 +6,7 @@ public struct XcodeTheme: Codable, Hashable, Sendable {
 	public let selection: String
 	public let markupTextNormalColor: String
 	public let markupTextNormalFont: String
-	public let insertionPoint: String
+	public let insertionPoint: String?
 	public let invisibles: String
 	public let syntaxColors: [String: String]
 	public let syntaxFonts: [String: String]
@@ -159,10 +159,14 @@ extension XcodeTheme: Styling {
 
 			return Style(color: color, font: font)
 		case .editor(.cursor):
-			let color = PlatformColor(componentsString: insertionPoint) ?? fallbackForegroundColor
-			let font = PlatformFont(componentsString: insertionPoint) ?? fallbackFont
+            if let insertionPoint {
+                let color = PlatformColor(componentsString: insertionPoint) ?? fallbackForegroundColor
+                let font = PlatformFont(componentsString: insertionPoint) ?? fallbackFont
 
-			return Style(color: color, font: font)
+                return Style(color: color, font: font)
+            } else {
+                return Style(color: fallbackForegroundColor, font: fallbackFont)
+            }
 		case .editor(.accessoryForeground):
 			return syntaxStyle(for: "xcode.syntax.plain")
 		case .editor(.accessoryBackground):
