@@ -20,8 +20,8 @@ final class XcodeThemeTests: XCTestCase {
 
 		// color equality here is actually quite tricky
 		XCTAssertEqual(
-			theme.style(for: .editor(.background)),
-			Style(color: PlatformColor(hex: "#ffffff")!)
+			theme.style(for: .editor(.background)).color.toHex(),
+			Style(color: PlatformColor(hex: "#ffffff")!).color.toHex()
 		)
 		XCTAssertEqual(
 			theme.style(for: .syntax(.text(nil))).color.toHex(),

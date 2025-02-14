@@ -6,7 +6,7 @@ public struct XcodeTheme: Codable, Hashable, Sendable {
 	public let selection: String
 	public let markupTextNormalColor: String
 	public let markupTextNormalFont: String
-	public let insertionPoint: String
+	public let insertionPoint: String?
 	public let invisibles: String
 	public let syntaxColors: [String: String]
 	public let syntaxFonts: [String: String]
@@ -159,10 +159,14 @@ extension XcodeTheme: Styling {
 
 			return Style(color: color, font: font)
 		case .editor(.cursor):
-			let color = PlatformColor(componentsString: insertionPoint) ?? fallbackForegroundColor
-			let font = PlatformFont(componentsString: insertionPoint) ?? fallbackFont
+            if let insertionPoint {
+                let color = PlatformColor(componentsString: insertionPoint) ?? fallbackForegroundColor
+                let font = PlatformFont(componentsString: insertionPoint) ?? fallbackFont
 
-			return Style(color: color, font: font)
+                return Style(color: color, font: font)
+            } else {
+                return Style(color: fallbackForegroundColor, font: fallbackFont)
+            }
 		case .editor(.accessoryForeground):
 			return syntaxStyle(for: "xcode.syntax.plain")
 		case .editor(.accessoryBackground):
@@ -175,20 +179,24 @@ extension XcodeTheme: Styling {
 			return syntaxStyle(for: "xcode.syntax.url")
 		case .syntax(.literal(.string(_))):
 			return syntaxStyle(for: "xcode.syntax.string")
+		case .syntax(.literal(.number(_))):
+			return syntaxStyle(for: "xcode.syntax.number")
 		case .syntax(.keyword(_)):
 			return syntaxStyle(for: "xcode.syntax.keyword")
 		case .syntax(.text(_)), .gutter(.label):
 			return syntaxStyle(for: "xcode.syntax.plain")
+		case .syntax(.identifier(.property)):
+			return syntaxStyle(for: "xcode.syntax.identifier.variable")
 		case .syntax(.identifier(.variable)):
 			return syntaxStyle(for: "xcode.syntax.identifier.variable")
-		case .syntax(.literal(.number(_))):
-			return syntaxStyle(for: "xcode.syntax.number")
 		case .syntax(.identifier(.type)):
 			return syntaxStyle(for: "xcode.syntax.identifier.type")
-		case .syntax(.definition(.method)), .syntax(.definition(.function)), .syntax(.definition(.constructor)), .syntax(.definition(.property)):
+		case .syntax(.definition(.method)), .syntax(.definition(.function)):
 			return syntaxStyle(for: "xcode.syntax.identifier.function")
+		case .syntax(.definition(.constructor)), .syntax(.definition(.property)):
+			return syntaxStyle(for: "xcode.syntax.declaration.other")
 		case .syntax(.definition(.macro)):
-			return syntaxStyle(for: "xcode.syntax.identifier..macro")
+			return syntaxStyle(for: "xcode.syntax.identifier.macro")
 		case .syntax(.invisible):
 			let color = PlatformColor(componentsString: invisibles) ?? fallbackForegroundColor
 			let font = PlatformFont(componentsString: invisibles) ?? fallbackFont
