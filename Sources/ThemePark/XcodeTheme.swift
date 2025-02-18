@@ -179,20 +179,24 @@ extension XcodeTheme: Styling {
 			return syntaxStyle(for: "xcode.syntax.url")
 		case .syntax(.literal(.string(_))):
 			return syntaxStyle(for: "xcode.syntax.string")
+		case .syntax(.literal(.number(_))):
+			return syntaxStyle(for: "xcode.syntax.number")
 		case .syntax(.keyword(_)):
 			return syntaxStyle(for: "xcode.syntax.keyword")
 		case .syntax(.text(_)), .gutter(.label):
 			return syntaxStyle(for: "xcode.syntax.plain")
+		case .syntax(.identifier(.property)):
+			return syntaxStyle(for: "xcode.syntax.identifier.variable")
 		case .syntax(.identifier(.variable)):
 			return syntaxStyle(for: "xcode.syntax.identifier.variable")
-		case .syntax(.literal(.number(_))):
-			return syntaxStyle(for: "xcode.syntax.number")
 		case .syntax(.identifier(.type)):
 			return syntaxStyle(for: "xcode.syntax.identifier.type")
-		case .syntax(.definition(.method)), .syntax(.definition(.function)), .syntax(.definition(.constructor)), .syntax(.definition(.property)):
+		case .syntax(.definition(.method)), .syntax(.definition(.function)):
 			return syntaxStyle(for: "xcode.syntax.identifier.function")
+		case .syntax(.definition(.constructor)), .syntax(.definition(.property)):
+			return syntaxStyle(for: "xcode.syntax.declaration.other")
 		case .syntax(.definition(.macro)):
-			return syntaxStyle(for: "xcode.syntax.identifier..macro")
+			return syntaxStyle(for: "xcode.syntax.identifier.macro")
 		case .syntax(.invisible):
 			let color = PlatformColor(componentsString: invisibles) ?? fallbackForegroundColor
 			let font = PlatformFont(componentsString: invisibles) ?? fallbackFont
