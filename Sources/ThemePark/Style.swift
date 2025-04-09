@@ -4,6 +4,14 @@ import SwiftUI
 #if canImport(UIKit)
 public typealias PlatformColor = UIColor
 public typealias PlatformFont = UIFont
+
+#if os(watchOS)
+// this is really weird but watchOS doesn't have a `label`
+extension UIColor {
+	static let label = UIColor.white
+}
+#endif
+
 #elseif canImport(AppKit)
 public typealias PlatformColor = NSColor
 public typealias PlatformFont = NSFont
