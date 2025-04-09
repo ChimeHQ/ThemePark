@@ -3,7 +3,7 @@ import ThemePark
 
 final class BBEditThemeTests: XCTestCase {
 	func testDarkTheme() throws {
-		let url = try XCTUnwrap(Bundle.module.url(forResource: "BBEdit Dark", withExtension: "bbColorScheme", subdirectory: "Resources"))
+		let url = try XCTUnwrap(Bundle.module.url(forResource: "BBEdit Dark", withExtension: "bbColorScheme", subdirectory: "TestData"))
 		let theme = try BBEditTheme(contentsOf: url)
 
 		XCTAssertEqual(theme.backgroundColor, "rgba(0.077525,0.077522,0.077524,1.000000)")
@@ -11,7 +11,7 @@ final class BBEditThemeTests: XCTestCase {
 	}
 
 	func testSemanticQueries() throws {
-		let url = try XCTUnwrap(Bundle.module.url(forResource: "BBEdit Dark", withExtension: "bbColorScheme", subdirectory: "Resources"))
+		let url = try XCTUnwrap(Bundle.module.url(forResource: "BBEdit Dark", withExtension: "bbColorScheme", subdirectory: "TestData"))
 		let theme = try BBEditTheme(contentsOf: url)
 
 		XCTAssertEqual(

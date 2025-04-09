@@ -3,7 +3,7 @@ import ThemePark
 
 final class XcodeThemeTests: XCTestCase {
 	func testDefaultLightTheme() throws {
-		let url = try XCTUnwrap(Bundle.module.url(forResource: "Default (Light)", withExtension: "xccolortheme", subdirectory: "Resources"))
+		let url = try XCTUnwrap(Bundle.module.url(forResource: "Default (Light)", withExtension: "xccolortheme", subdirectory: "TestData"))
 		let theme = try XcodeTheme(contentsOf: url)
 
 		XCTAssertEqual(theme.sourceTextBackground, "1 1 1 1")
@@ -15,7 +15,7 @@ final class XcodeThemeTests: XCTestCase {
 	}
 
 	func testSemanticQueries() throws {
-		let url = try XCTUnwrap(Bundle.module.url(forResource: "Default (Light)", withExtension: "xccolortheme", subdirectory: "Resources"))
+		let url = try XCTUnwrap(Bundle.module.url(forResource: "Default (Light)", withExtension: "xccolortheme", subdirectory: "TestData"))
 		let theme = try XcodeTheme(contentsOf: url)
 
 		// color equality here is actually quite tricky

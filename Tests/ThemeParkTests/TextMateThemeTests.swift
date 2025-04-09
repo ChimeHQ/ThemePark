@@ -3,7 +3,7 @@ import ThemePark
 
 final class TextMateThemeTests: XCTestCase {
 	func testBackboardTheme() throws {
-		let url = try XCTUnwrap(Bundle.module.url(forResource: "Blackboard", withExtension: "tmTheme", subdirectory: "Resources"))
+		let url = try XCTUnwrap(Bundle.module.url(forResource: "Blackboard", withExtension: "tmTheme", subdirectory: "TestData"))
 		let theme = try TextMateTheme(contentsOf: url)
 
 		XCTAssertEqual(theme.uuid, UUID(uuidString: "A2C6BAA7-90D0-4147-BBF5-96B0CD92D109"))
@@ -19,7 +19,7 @@ final class TextMateThemeTests: XCTestCase {
 	}
 
 	func testSemanticQueries() throws {
-		let url = try XCTUnwrap(Bundle.module.url(forResource: "Blackboard", withExtension: "tmTheme", subdirectory: "Resources"))
+		let url = try XCTUnwrap(Bundle.module.url(forResource: "Blackboard", withExtension: "tmTheme", subdirectory: "TestData"))
 		let theme = try TextMateTheme(contentsOf: url)
 
 		XCTAssertEqual(

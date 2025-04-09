@@ -1,4 +1,4 @@
-// swift-tools-version: 5.9
+// swift-tools-version: 6.0
 
 import PackageDescription
 
@@ -23,18 +23,7 @@ let package = Package(
 		.testTarget(
 			name: "ThemeParkTests",
 			dependencies: ["ThemePark"],
-			resources: [.copy("Resources")]
+			resources: [.copy("TestData")]
 		),
 	]
 )
-
-let swiftSettings: [SwiftSetting] = [
-	.enableExperimentalFeature("StrictConcurrency"),
-	.enableUpcomingFeature("DisableOutwardActorInference"),
-]
-
-for target in package.targets {
-	var settings = target.swiftSettings ?? []
-	settings.append(contentsOf: swiftSettings)
-	target.swiftSettings = settings
-}
